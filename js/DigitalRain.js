@@ -23,12 +23,12 @@ window.onload = function(){
         drops.push(0);
     }
     //运动的文字
-    var str ="WELCOME TO WWW.ITRHX.COM";
+    var str ="WELCOME TO MYPAGE";
     //4:fillText(str,x,y);原理就是去更改y的坐标位置
     //绘画的函数
     function draw(){
         //context.fillStyle = "rgba(238,238,238,.08)";//遮盖层
-        context.fillRect(0,0,W,H);
+        //context.fillRect(0,0,W,H);
         //给字体设置样式
         context.font = "600 "+fontSize+"px  Georgia";
         //给字体添加颜色
