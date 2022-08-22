@@ -146,74 +146,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/23/%E8%87%AA%E7%9B%91%E7%9D%A3%E9%A2%84%E8%AE%AD%E7%BB%83/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/yj.png">
-      <meta itemprop="name" content="MYF">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MYF  ZJU-ISEE">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/08/23/%E8%87%AA%E7%9B%91%E7%9D%A3%E9%A2%84%E8%AE%AD%E7%BB%83/" class="post-title-link" itemprop="url">未命名</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2022-08-23 00:27:19 / 修改时间：00:42:54" itemprop="dateCreated datePublished" datetime="2022-08-23T00:27:19+08:00">2022-08-23</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">title: 自监督预训练 </span><br><span class="line">date: 2022/3/26 </span><br><span class="line">categories: # 分类</span><br><span class="line">- Deep learning</span><br><span class="line">tags: </span><br><span class="line">- pre-train</span><br><span class="line">- SSL</span><br></pre></td></tr></table></figure>
-
-<h3 id="自监督预训练"><a href="#自监督预训练" class="headerlink" title="自监督预训练"></a>自监督预训练</h3><p>1.1 Self-supervised Learning<br>在预训练阶段我们使用无标签的数据集 (unlabeled data)，因为有标签的数据集很贵，打标签得要多少人工劳力去标注，那成本是相当高的，太贵。相反，无标签的数据集网上随便到处爬，它便宜。在训练模型参数的时候，我们不追求把这个参数用带标签数据从初始化的一张白纸给一步训练到位，原因就是数据集太贵。于是 Self-Supervised Learning 就想先把参数从一张白纸训练到初步成型，再从初步成型训练到完全成型。注意这是2个阶段。这个训练到初步成型的东西，我们把它叫做 Visual Representation。预训练模型的时候，就是模型参数从一张白纸到初步成型的这个过程，还是用无标签数据集。等我把模型参数训练个八九不离十，这时候再根据你下游任务 (Downstream Tasks) 的不同去用带标签的数据集把参数训练到完全成型，那这时用的数据集量就不用太多了，因为参数经过了第1阶段就已经训练得差不多了。</p>
-<p>第一个阶段不涉及任何下游任务，就是拿着一堆无标签的数据去预训练，没有特定的任务，这个话用官方语言表达叫做：in a task-agnostic way。第二个阶段涉及下游任务，就是拿着一堆带标签的数据去在下游任务上 Fine-tune，这个话用官方语言表达叫做：in a task-specific way。</p>
-<p>以上这些话就是 Self-Supervised Learning 的核心思想，如下图1所示，后面还会再次提到它。</p>
-<p><img src="https://img-blog.csdnimg.cn/img_convert/500f387fc8f44fba0481140005109af5.png" alt="图1：Self-Supervised Learning 的核心思想"></p>
-<p>Self-Supervised Learning 不仅是在NLP领域，在CV, 语音领域也有很多经典的工作，如下图2所示。它可以分成3类：Data Centric, Prediction (也叫 Generative) 和 Contrastive。</p>
-<p><img src="https://img-blog.csdnimg.cn/img_convert/9db77d8f55425d9debd1a4d4f7acbac6.png" alt="图2：各个领域的 Self-Supervised Learning"></p>
-<p>其中的主流就是基于 Generative 的方法和基于 Contrative 的方法。如下图 3 所示这里简单介绍下。基于 Generative 的方法主要关注的重建误差，比如对于 NLP 任务而言，一个句子中间盖住一个 token，让模型去预测，令得到的预测结果与真实的 token 之间的误差作为损失。基于 Contrastive 的方法不要求模型能够重建原始输入，而是希望模型能够在特征空间上对不同的输入进行分辨。</p>
-<p><img src="https://img-blog.csdnimg.cn/img_convert/0f6759c96a9b8bb4b026c4d29abe5aec.png" alt="图3：基于 generative 的方法和基于 contrastive 的方法的总结图片"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/21/%E6%96%B0%E7%9A%84%E5%BC%80%E5%A7%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -271,6 +203,87 @@
           <p>走上了这条路，就不能回头了</p>
 <p>花了点时间复习了Git，找回了很久不用的个人主页，陆续添加了之前的文章，接下去几天还会修缮一下，增加一下美观程度</p>
 <p>以后就作为学习各类技术栈的记录，科研的日志，以及生活的随笔</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/23/%E8%87%AA%E7%9B%91%E7%9D%A3%E9%A2%84%E8%AE%AD%E7%BB%83/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/yj.png">
+      <meta itemprop="name" content="MYF">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MYF  ZJU-ISEE">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/23/%E8%87%AA%E7%9B%91%E7%9D%A3%E9%A2%84%E8%AE%AD%E7%BB%83/" class="post-title-link" itemprop="url">自监督预训练</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-02-23 00:55:38" itemprop="dateCreated datePublished" datetime="2022-02-23T00:55:38+08:00">2022-02-23</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-08-23 00:57:35" itemprop="dateModified" datetime="2022-08-23T00:57:35+08:00">2022-08-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Deep-learning/" itemprop="url" rel="index"><span itemprop="name">Deep learning</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="自监督预训练"><a href="#自监督预训练" class="headerlink" title="自监督预训练"></a>自监督预训练</h3><p>1.1 Self-supervised Learning<br>在预训练阶段我们使用无标签的数据集 (unlabeled data)，因为有标签的数据集很贵，打标签得要多少人工劳力去标注，那成本是相当高的，太贵。相反，无标签的数据集网上随便到处爬，它便宜。在训练模型参数的时候，我们不追求把这个参数用带标签数据从初始化的一张白纸给一步训练到位，原因就是数据集太贵。于是 Self-Supervised Learning 就想先把参数从一张白纸训练到初步成型，再从初步成型训练到完全成型。注意这是2个阶段。这个训练到初步成型的东西，我们把它叫做 Visual Representation。预训练模型的时候，就是模型参数从一张白纸到初步成型的这个过程，还是用无标签数据集。等我把模型参数训练个八九不离十，这时候再根据你下游任务 (Downstream Tasks) 的不同去用带标签的数据集把参数训练到完全成型，那这时用的数据集量就不用太多了，因为参数经过了第1阶段就已经训练得差不多了。</p>
+<p>第一个阶段不涉及任何下游任务，就是拿着一堆无标签的数据去预训练，没有特定的任务，这个话用官方语言表达叫做：in a task-agnostic way。第二个阶段涉及下游任务，就是拿着一堆带标签的数据去在下游任务上 Fine-tune，这个话用官方语言表达叫做：in a task-specific way。</p>
+<p>以上这些话就是 Self-Supervised Learning 的核心思想，如下图1所示，后面还会再次提到它。</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/500f387fc8f44fba0481140005109af5.png" alt="图1：Self-Supervised Learning 的核心思想"></p>
+<p>Self-Supervised Learning 不仅是在NLP领域，在CV, 语音领域也有很多经典的工作，如下图2所示。它可以分成3类：Data Centric, Prediction (也叫 Generative) 和 Contrastive。</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/9db77d8f55425d9debd1a4d4f7acbac6.png" alt="图2：各个领域的 Self-Supervised Learning"></p>
+<p>其中的主流就是基于 Generative 的方法和基于 Contrative 的方法。如下图 3 所示这里简单介绍下。基于 Generative 的方法主要关注的重建误差，比如对于 NLP 任务而言，一个句子中间盖住一个 token，让模型去预测，令得到的预测结果与真实的 token 之间的误差作为损失。基于 Contrastive 的方法不要求模型能够重建原始输入，而是希望模型能够在特征空间上对不同的输入进行分辨。</p>
+<p><img src="https://img-blog.csdnimg.cn/img_convert/0f6759c96a9b8bb4b026c4d29abe5aec.png" alt="图3：基于 generative 的方法和基于 contrastive 的方法的总结图片"></p>
 
       
     </div>
@@ -849,11 +862,11 @@
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
