@@ -20,28 +20,44 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="MYF  ZJU-ISEE">
-<meta property="og:url" content="http://example.com/index.html">
+  <meta name="description" content="Python1.functools partial详解首先从一个例子说起：  首先我们定义了一个function add ，它接收两个参数a和b，返回a和b的和。然后我们使用partial ，第一个参数是fun ，即传入我们的函数add，然后 再传入一个参数 ，这里是 1 ，它返回给我们一个新的function （addOne）。我们发现这个新的function 只需要接受一个参数，然后返回这个参">
+<meta property="og:type" content="article">
+<meta property="og:title" content="代码细节随记载">
+<meta property="og:url" content="http://example.com/2021/11/12/%E4%BB%A3%E7%A0%81%E7%BB%86%E8%8A%82%E9%9A%8F%E6%9C%BA/index.html">
 <meta property="og:site_name" content="MYF  ZJU-ISEE">
+<meta property="og:description" content="Python1.functools partial详解首先从一个例子说起：  首先我们定义了一个function add ，它接收两个参数a和b，返回a和b的和。然后我们使用partial ，第一个参数是fun ，即传入我们的函数add，然后 再传入一个参数 ，这里是 1 ，它返回给我们一个新的function （addOne）。我们发现这个新的function 只需要接受一个参数，然后返回这个参">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdn.net/20170804092530371">
+<meta property="og:image" content="https://img-blog.csdn.net/20170804093505666">
+<meta property="og:image" content="https://img-blog.csdn.net/20170804093904291">
+<meta property="og:image" content="https://img-blog.csdn.net/20170804095647822">
+<meta property="og:image" content="https://img-blog.csdn.net/20170804101518145">
+<meta property="og:image" content="https://img-blog.csdn.net/20170804103754439">
+<meta property="og:image" content="https://img-blog.csdn.net/20170804103924888">
+<meta property="og:image" content="https://img2018.cnblogs.com/blog/1498369/201905/1498369-20190504202338298-1508304575.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2020042710180343.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FzbXg2NjY=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200427102557964.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FzbXg2NjY=,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2021-11-12T14:47:20.000Z">
+<meta property="article:modified_time" content="2022-08-23T14:50:06.625Z">
 <meta property="article:author" content="MYF">
+<meta property="article:tag" content="code">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdn.net/20170804092530371">
 
-<link rel="canonical" href="http://example.com/">
+<link rel="canonical" href="http://example.com/2021/11/12/%E4%BB%A3%E7%A0%81%E7%BB%86%E8%8A%82%E9%9A%8F%E6%9C%BA/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>MYF  ZJU-ISEE</title>
+  <title>代码细节随记载 | MYF  ZJU-ISEE</title>
   
 
 
@@ -140,265 +156,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/21/%E6%96%B0%E7%9A%84%E5%BC%80%E5%A7%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/yj.png">
-      <meta itemprop="name" content="MYF">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MYF  ZJU-ISEE">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/08/21/%E6%96%B0%E7%9A%84%E5%BC%80%E5%A7%8B/" class="post-title-link" itemprop="url">新的开始</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-08-21 16:52:06" itemprop="dateCreated datePublished" datetime="2022-08-21T16:52:06+08:00">2022-08-21</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-08-23 00:13:21" itemprop="dateModified" datetime="2022-08-23T00:13:21+08:00">2022-08-23</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Daily/" itemprop="url" rel="index"><span itemprop="name">Daily</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
 
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>走上了这条路，就不能回头了</p>
-<p>花了点时间复习了Git，找回了很久不用的个人主页，陆续添加了之前的文章，接下去几天还会修缮一下，增加一下美观程度</p>
-<p>以后就作为学习各类技术栈的记录，科研的日志，以及生活的随笔</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/23/%E8%87%AA%E7%9B%91%E7%9D%A3%E9%A2%84%E8%AE%AD%E7%BB%83/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/yj.png">
-      <meta itemprop="name" content="MYF">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MYF  ZJU-ISEE">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/02/23/%E8%87%AA%E7%9B%91%E7%9D%A3%E9%A2%84%E8%AE%AD%E7%BB%83/" class="post-title-link" itemprop="url">自监督预训练</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-02-23 00:55:38" itemprop="dateCreated datePublished" datetime="2022-02-23T00:55:38+08:00">2022-02-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-08-23 00:57:35" itemprop="dateModified" datetime="2022-08-23T00:57:35+08:00">2022-08-23</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Deep-learning/" itemprop="url" rel="index"><span itemprop="name">Deep learning</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="自监督预训练"><a href="#自监督预训练" class="headerlink" title="自监督预训练"></a>自监督预训练</h3><p>1.1 Self-supervised Learning<br>在预训练阶段我们使用无标签的数据集 (unlabeled data)，因为有标签的数据集很贵，打标签得要多少人工劳力去标注，那成本是相当高的，太贵。相反，无标签的数据集网上随便到处爬，它便宜。在训练模型参数的时候，我们不追求把这个参数用带标签数据从初始化的一张白纸给一步训练到位，原因就是数据集太贵。于是 Self-Supervised Learning 就想先把参数从一张白纸训练到初步成型，再从初步成型训练到完全成型。注意这是2个阶段。这个训练到初步成型的东西，我们把它叫做 Visual Representation。预训练模型的时候，就是模型参数从一张白纸到初步成型的这个过程，还是用无标签数据集。等我把模型参数训练个八九不离十，这时候再根据你下游任务 (Downstream Tasks) 的不同去用带标签的数据集把参数训练到完全成型，那这时用的数据集量就不用太多了，因为参数经过了第1阶段就已经训练得差不多了。</p>
-<p>第一个阶段不涉及任何下游任务，就是拿着一堆无标签的数据去预训练，没有特定的任务，这个话用官方语言表达叫做：in a task-agnostic way。第二个阶段涉及下游任务，就是拿着一堆带标签的数据去在下游任务上 Fine-tune，这个话用官方语言表达叫做：in a task-specific way。</p>
-<p>以上这些话就是 Self-Supervised Learning 的核心思想，如下图1所示，后面还会再次提到它。</p>
-<p><img src="https://img-blog.csdnimg.cn/img_convert/500f387fc8f44fba0481140005109af5.png" alt="图1：Self-Supervised Learning 的核心思想"></p>
-<p>Self-Supervised Learning 不仅是在NLP领域，在CV, 语音领域也有很多经典的工作，如下图2所示。它可以分成3类：Data Centric, Prediction (也叫 Generative) 和 Contrastive。</p>
-<p><img src="https://img-blog.csdnimg.cn/img_convert/9db77d8f55425d9debd1a4d4f7acbac6.png" alt="图2：各个领域的 Self-Supervised Learning"></p>
-<p>其中的主流就是基于 Generative 的方法和基于 Contrative 的方法。如下图 3 所示这里简单介绍下。基于 Generative 的方法主要关注的重建误差，比如对于 NLP 任务而言，一个句子中间盖住一个 token，让模型去预测，令得到的预测结果与真实的 token 之间的误差作为损失。基于 Contrastive 的方法不要求模型能够重建原始输入，而是希望模型能够在特征空间上对不同的输入进行分辨。</p>
-<p><img src="https://img-blog.csdnimg.cn/img_convert/0f6759c96a9b8bb4b026c4d29abe5aec.png" alt="图3：基于 generative 的方法和基于 contrastive 的方法的总结图片"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/11/21/Baseline1-note-code/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/yj.png">
-      <meta itemprop="name" content="MYF">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MYF  ZJU-ISEE">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/11/21/Baseline1-note-code/" class="post-title-link" itemprop="url">Baseline1代码结构和笔记</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-11-21 16:52:06" itemprop="dateCreated datePublished" datetime="2021-11-21T16:52:06+08:00">2021-11-21</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-08-23 00:15:43" itemprop="dateModified" datetime="2022-08-23T00:15:43+08:00">2022-08-23</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Research/" itemprop="url" rel="index"><span itemprop="name">Research</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="baseline1代码结构和笔记"><a href="#baseline1代码结构和笔记" class="headerlink" title="baseline1代码结构和笔记"></a>baseline1代码结构和笔记</h3><h4 id="1"><a href="#1" class="headerlink" title="1."></a>1.</h4><p>sub-sample-rate就是新的采样率 ，这里设置为2</p>
-<p>CrossTaskDataset中，已经将gt信息写入h5py文件中了</p>
-<h4 id="2"><a href="#2" class="headerlink" title="2."></a>2.</h4><p>破案了，在ProceL数据集中有segment的存在，因此有这个方法的应用</p>
-<p>attention_summarization中也有这样的操作，aggregated_features将同一片段不同帧的特征mean成一个  T-&gt;S</p>
-<p> # 现在的情况就是T&#x3D;S，没有真正意义上的segment的存在，因为提取的feature就是降采样后提取的，feature[1,T,49,521]中的T不是视频原本的帧数</p>
-<p>subsample-segment_list以及函数aggregated_keysteps 的作用不明确 </p>
-<p> 实验证明经过aggregated_keysteps处理后的key_step_lables和处理前的key_step-list是一致的</p>
-<p>函数定义如下</p>
-<p>def aggregated_keysteps(subsampled_segment_list, key_step_list):</p>
-<p>  “””</p>
-<p>  Function which aggregate the subsampled keysteps assigning the keystep which is found in majority for each segment</p>
-<p>  Parameters</p>
-<p>  -———</p>
-<p>  subsampled_segment_list: subsampled list of segments key_step_list: a list denoting the key step number each frame belongs to.</p>
-<p>  Returns</p>
-<p>  -——</p>
-<p>  batch_aggregated_key_list: list denoting which segment in the aggregated</p>
-<p>  feature belongs to which key step</p>
-<p>  “””-</p>
-<h4 id="3-模型中的数据流动"><a href="#3-模型中的数据流动" class="headerlink" title="3.模型中的数据流动"></a>3.模型中的数据流动</h4><h4 id="4-评估方式"><a href="#4-评估方式" class="headerlink" title="4.评估方式"></a>4.评估方式</h4><p> Mof（分为是否per-keystep())</p>
-<p>++++++++++++</p>
-<p>有应用内置的匈牙利算法实现linear_sum_assignment来实现分配</p>
-<p><img src="C:\Users\ys\AppData\Roaming\Typora\typora-user-images\image-20211128205936133.png" alt="image-20211128205936133"></p>
-<h4 id="5-bug-and-warning"><a href="#5-bug-and-warning" class="headerlink" title="5 bug and warning"></a>5 bug and warning</h4><p>runtime error</p>
-<p>&#x2F;data&#x2F;yufan&#x2F;eccv20&#x2F;core&#x2F;FeatureVGGDataset_CrossTask.py:180: H5pyDeprecationWarning: dataset.value has been deprecated. Use dataset[()] instead.</p>
-<p>UserWarning: nn.functional.tanh is deprecated. Use torch.tanh instead.<br>  warnings.warn(“nn.functional.tanh is deprecated. Use torch.tanh instead.”)</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
@@ -414,10 +175,9 @@
       <meta itemprop="name" content="MYF  ZJU-ISEE">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/11/12/%E4%BB%A3%E7%A0%81%E7%BB%86%E8%8A%82%E9%9A%8F%E6%9C%BA/" class="post-title-link" itemprop="url">代码细节随记载</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          代码细节随记载
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -450,6 +210,13 @@
             </span>
 
           
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
 
         </div>
       </header>
@@ -460,7 +227,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h4 id="Python"><a href="#Python" class="headerlink" title="Python"></a>Python</h4><h5 id="1-functools-partial详解"><a href="#1-functools-partial详解" class="headerlink" title="1.functools partial详解"></a>1.functools partial详解</h5><p>首先从一个例子说起：</p>
+        <h4 id="Python"><a href="#Python" class="headerlink" title="Python"></a>Python</h4><h5 id="1-functools-partial详解"><a href="#1-functools-partial详解" class="headerlink" title="1.functools partial详解"></a>1.functools partial详解</h5><p>首先从一个例子说起：</p>
 <p><img src="https://img-blog.csdn.net/20170804092530371" alt="img"></p>
 <p>首先我们定义了一个function add ，它接收两个参数a和b，返回a和b的和。然后我们使用partial ，第一个参数是fun ，即传入我们的函数add，然后 再传入一个参数 ，这里是 1 ，它返回给我们一个新的function （addOne）。我们发现这个新的function 只需要接受一个参数，然后返回这个参数与 1 的和。看起来其实相当于我们在使用add函数时固定了a的值为1（注意是从左到右固定参数的值，你可以自己定义一个减法测试）。那我们是不是 可以固定多个参数的，当然是可以的，看下面这个例子：<img src="https://img-blog.csdn.net/20170804093505666" alt="img"></p>
 <p>可以看出我们是可以固定多个参数的，如上面的addTwo函数相对于原函数add固定了a和b的值 。 </p>
@@ -589,412 +356,53 @@
 <p>nn.Conv1d作用在第二个维度位置channel，nn.Linear作用在第三个维度位置in_features，对于一个X，若要在两者之间进行等价计算，需要进行tensor.permute，重新排列维度轴秩序</p>
 <p>详见博客：<a target="_blank" rel="noopener" href="https://blog.csdn.net/l1076604169/article/details/107170146">https://blog.csdn.net/l1076604169/article/details/107170146</a></p>
 
-      
     </div>
 
     
     
     
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/05/07/convex-optimization/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/yj.png">
-      <meta itemprop="name" content="MYF">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MYF  ZJU-ISEE">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/07/convex-optimization/" class="post-title-link" itemprop="url">Convex Optimization</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-05-07 14:41:32 / 修改时间：15:00:53" itemprop="dateCreated datePublished" datetime="2020-05-07T14:41:32+08:00">2020-05-07</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/math/" itemprop="url" rel="index"><span itemprop="name">math</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/math/optimization/" itemprop="url" rel="index"><span itemprop="name">optimization</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>This is a course provided by professor LinQing in USTC, called Optimization theory, but concentreting on convex optimization, which is simpler than non-convex optimizayion problems.So we can also call it simple optimization.The video of lectures are shared in <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Jt411p7jE?from=search&seid=15465159093593254480">bilibili</a>, including 54 lectures.  </p>
-<h2 id="Contents"><a href="#Contents" class="headerlink" title="Contents"></a>Contents</h2>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/05/07/convex-optimization/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
-    </div>
 
-    
-    
-    
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>MYF
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2021/11/12/%E4%BB%A3%E7%A0%81%E7%BB%86%E8%8A%82%E9%9A%8F%E6%9C%BA/" title="代码细节随记载">http://example.com/2021/11/12/代码细节随机/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
+          <div class="post-tags">
+              <a href="/tags/code/" rel="tag"># code</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/07/convex-optimization/" rel="prev" title="Convex Optimization">
+      <i class="fa fa-chevron-left"></i> Convex Optimization
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/11/21/Baseline1-note-code/" rel="next" title="Baseline1代码结构和笔记">
+      Baseline1代码结构和笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
       </footer>
+    
   </article>
   
   
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/05/05/Machine-Learning-cornerstone/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/yj.png">
-      <meta itemprop="name" content="MYF">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MYF  ZJU-ISEE">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/05/Machine-Learning-cornerstone/" class="post-title-link" itemprop="url">Machine Learning (NTU by Lin)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-05 00:32:18" itemprop="dateCreated datePublished" datetime="2020-05-05T00:32:18+08:00">2020-05-05</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-05-28 09:46:09" itemprop="dateModified" datetime="2020-05-28T09:46:09+08:00">2020-05-28</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Machine-learning/" itemprop="url" rel="index"><span itemprop="name">Machine learning</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Machine-learning/primary/" itemprop="url" rel="index"><span itemprop="name">primary</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Machine learning, providing by NTU professor Linxuantian.<br>this course includes two parts, ML foundation and ML techniques. The former is about some basic problems and concepts about machine leaning, like how can can machine learing, why can machine learning, when can machine learning and so on… The latter turns to some concrete algorithm (like LDA, SVM, HMM, PCA) and other details. The materials about this courese include videos, slides and some lecture notes from internet.</p>
-<h2 id="I-will-share-my-own-summary-and-ideas-here-from-time-to-time"><a href="#I-will-share-my-own-summary-and-ideas-here-from-time-to-time" class="headerlink" title="I will share my own summary and ideas here from time to time."></a>I will share my own summary and ideas here from time to time.</h2>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/05/05/Database-System-overview/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/yj.png">
-      <meta itemprop="name" content="MYF">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MYF  ZJU-ISEE">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/05/Database-System-overview/" class="post-title-link" itemprop="url">Database System overview</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-05-05 00:20:22 / 修改时间：00:29:38" itemprop="dateCreated datePublished" datetime="2020-05-05T00:20:22+08:00">2020-05-05</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Computer-Science/" itemprop="url" rel="index"><span itemprop="name">Computer Science</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Computer-Science/Database/" itemprop="url" rel="index"><span itemprop="name">Database</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Data-Science/" itemprop="url" rel="index"><span itemprop="name">Data Science</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Data-Science/Database/" itemprop="url" rel="index"><span itemprop="name">Database</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/05/04/Linear-Algebra-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/yj.png">
-      <meta itemprop="name" content="MYF">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MYF  ZJU-ISEE">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/04/Linear-Algebra-1/" class="post-title-link" itemprop="url">Linear Algebra study plan (by MIT)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-04 22:13:59" itemprop="dateCreated datePublished" datetime="2020-05-04T22:13:59+08:00">2020-05-04</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-05-05 20:43:05" itemprop="dateModified" datetime="2020-05-05T20:43:05+08:00">2020-05-05</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/math/" itemprop="url" rel="index"><span itemprop="name">math</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/math/Linear-Algebra/" itemprop="url" rel="index"><span itemprop="name">Linear Algebra</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="Introduction-to-the-course"><a href="#Introduction-to-the-course" class="headerlink" title="Introduction to the course"></a>Introduction to the course</h2><p>The planned course are “Linear Algebra” and “Matrix Methods in Data Analysis, Signal Processing, and Machine Learning”, MIT Course Number: 18.06 &#x2F; 18.065. This is a course offered by Prof. Gilbert Strang.Through these two courses, you will deeply understand the nature of linear algebra and master the basic matrix methods required in research fields such as machine learning.<br>More info: <a target="_blank" rel="noopener" href="https://ocw.mit.edu/courses/mathematics/18-06-linear-algebra-spring-2010/index.htm">18.06</a><br>More info: <a target="_blank" rel="noopener" href="https://ocw.mit.edu/courses/mathematics/18-065-matrix-methods-in-data-analysis-signal-processing-and-machine-learning-spring-2018/index.htm">18.065</a></p>
-<h2 id="Study-plan"><a href="#Study-plan" class="headerlink" title="Study plan"></a>Study plan</h2><p>There are a total of 70 lectures in the two courses, and the second course will be the main one. The first course will be reviewed in the forgetting place. Complete a lecture in two days, and extract notes and complete the exercises. The integrated data will be uploaded to this blog or <a target="_blank" rel="noopener" href="https://github.com/jackaihfia2334">Github</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/05/04/my-first-blog/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/yj.png">
-      <meta itemprop="name" content="MYF">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MYF  ZJU-ISEE">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/04/my-first-blog/" class="post-title-link" itemprop="url">my first blog</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-04 21:17:37" itemprop="dateCreated datePublished" datetime="2020-05-04T21:17:37+08:00">2020-05-04</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-08-21 16:15:44" itemprop="dateModified" datetime="2022-08-21T16:15:44+08:00">2022-08-21</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Dairy/" itemprop="url" rel="index"><span itemprop="name">Dairy</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>This is my first blog, writing for testing and commemoration. In the future, I will record my learning process in this way, and share my experience. It is hoped that this way of forced output will enhance the learning effect and at the same time add a sense of ritual to learning. Of course, this is also cool!<br>One thing needs to be stated, this blog will use English as much as possible, and also use Chinese to explain if necessary.This is not only because English is the universal natural language of the world, just like the status of mathematics in the natural sciences, but also to improve my English writing ability and make the interface more concise.<br>The content of the blog will focus on computer science and mathematics, while also sharing some interesting and practical resources. While enjoying the great convenience brought by the Internet, I am naturally happy to share my acquirement. As the saying goes, exploring truth is more valuable than possessing truth.<br>It will update from time to time, but I will keep hard and try my best to do it.<br>Promote your career, don’t let your career advance you.</p>
-<hr>
-<h2 id="2022-8-21"><a href="#2022-8-21" class="headerlink" title="2022.8.21"></a>2022.8.21</h2>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-
   
 
 
@@ -1047,6 +455,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Python"><span class="nav-number">1.</span> <span class="nav-text">Python</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-functools-partial%E8%AF%A6%E8%A7%A3"><span class="nav-number">1.1.</span> <span class="nav-text">1.functools partial详解</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pandas"><span class="nav-number">2.</span> <span class="nav-text">pandas</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-df-iloc"><span class="nav-number">2.1.</span> <span class="nav-text">1.df.iloc[]</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Pytorch"><span class="nav-number">3.</span> <span class="nav-text">Pytorch</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#nn-LayerNorm"><span class="nav-number">3.1.</span> <span class="nav-text">nn.LayerNorm</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#torch-roll"><span class="nav-number">3.2.</span> <span class="nav-text">torch.roll</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#permute%E5%87%BD%E6%95%B0"><span class="nav-number">3.3.</span> <span class="nav-text">permute函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#contiguous%E5%87%BD%E6%95%B0"><span class="nav-number">3.4.</span> <span class="nav-text">contiguous函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#flatten-%E5%8F%82%E6%95%B0%E8%AF%A6%E8%A7%A3"><span class="nav-number">3.5.</span> <span class="nav-text">flatten()参数详解</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Conv1d-amp-Conv2d"><span class="nav-number">4.</span> <span class="nav-text">Conv1d&amp;Conv2d</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Pytorch%E4%B8%ADtranspose%E4%B8%8Enumpy%E4%B8%ADtranspose%E7%9A%84%E5%BC%82%E5%90%8C"><span class="nav-number">5.</span> <span class="nav-text">Pytorch中transpose与numpy中transpose的异同</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%A0%E9%87%8F%E4%B9%98%E6%B3%95"><span class="nav-number"></span> <span class="nav-text">张量乘法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#PyTorch%E5%AE%9E%E7%8E%B0MLP%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%96%B9%E6%B3%95%EF%BC%8C%E4%BB%A5%E5%8F%8Ann-Conv1d-kernel-size-x3D-1%E5%92%8Cnn-Linear%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.</span> <span class="nav-text">PyTorch实现MLP的两种方法，以及nn.Conv1d, kernel_size&#x3D;1和nn.Linear的区别</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
