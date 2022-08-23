@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="ASformer**: Transformer for Action Segmentation**疑问：代码和论文不一致cross-attention部分 Abstractaction segmentation task the potential of Transformer in modeling the relations among elements in sequential data.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASformer论文笔记">
+<meta property="og:url" content="http://example.com/2022/08/23/ASformer%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="MYF  ZJU-ISEE">
+<meta property="og:description" content="ASformer**: Transformer for Action Segmentation**疑问：代码和论文不一致cross-attention部分 Abstractaction segmentation task the potential of Transformer in modeling the relations among elements in sequential data.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-96160c6ccda823f78099bcce690ce7d2_720w.jpg">
+<meta property="og:image" content="c:/Users/ys/AppData/Roaming/Typora/typora-user-images/image-20211129155215256.png">
+<meta property="og:image" content="https://pic3.zhimg.com/v2-94c40b6f6f41e45f5d254906d70c10ee_r.jpg">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=N">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=C">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=F">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9waWMzLnpoaW1nLmNvbS92Mi1mMGIzZTQ1MDUwZjczMzFmMmJjODQzNDczZDIxNGM0YV9yLmpwZw?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9waWMyLnpoaW1nLmNvbS92Mi0wMDgzYmVhY2E2NDZkMTNjM2RjM2UzMzU5OGMwNzY2ZF9yLmpwZw?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9waWMzLnpoaW1nLmNvbS92Mi0zY2U3ZmI3MzlhNmU5ZGQ1ZWQzNDQ1NzVlN2RhZDAxYV9yLmpwZw?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9waWMyLnpoaW1nLmNvbS84MC92Mi0yMjcxOGQwYzdkZGQwNzk4NWM3N2U5Mjc5ZWRiNDVhZF9oZC5qcGc?x-oss-process=image/format,png">
+<meta property="article:published_time" content="2022-08-23T15:18:22.000Z">
+<meta property="article:modified_time" content="2022-08-23T15:20:30.135Z">
+<meta property="article:author" content="MYF">
+<meta property="article:tag" content="action segmentation">
+<meta property="article:tag" content="transformer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic3.zhimg.com/80/v2-96160c6ccda823f78099bcce690ce7d2_720w.jpg">
+
+<link rel="canonical" href="http://example.com/2022/08/23/ASformer%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>ASformer论文笔记 | MYF  ZJU-ISEE</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">MYF  ZJU-ISEE</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">When the world turns its back on you, you turn your back on the world</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/23/ASformer%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/yj.png">
+      <meta itemprop="name" content="MYF">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MYF  ZJU-ISEE">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ASformer论文笔记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-08-23 23:18:22 / 修改时间：23:20:30" itemprop="dateCreated datePublished" datetime="2022-08-23T23:18:22+08:00">2022-08-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Research/" itemprop="url" rel="index"><span itemprop="name">Research</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="ASformer-Transformer-for-Action-Segmentation"><a href="#ASformer-Transformer-for-Action-Segmentation" class="headerlink" title="ASformer**: Transformer for Action Segmentation**"></a>ASformer**: Transformer for Action Segmentation**</h3><p>疑问：代码和论文不一致cross-attention部分</p>
+<h4 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h4><p>action segmentation task</p>
+<p>the potential of Transformer in modeling the relations among elements in sequential data.</p>
+<p>several major concerns and their soluntion</p>
+<p>1.lack of inductive biases with small training sets</p>
+<p>S: bring in the local connectivity inductive priors because of the high locality of features</p>
+<p>2.the defificit in processing long input sequence</p>
+<p>S:apply a pre-defifined hierarchical representation pattern that effificiently handles long input sequences</p>
+<p>3.limitation of the decoder architecture to utilize temporal relations among multiple</p>
+<p>action segments to refifine the initial predictions.</p>
+<p>S:design the decoder to refifine the initial predictions from the encoder. </p>
+<h4 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1.Introduction"></a>1.<strong>Introduction</strong></h4><p>任务对比：</p>
+<p><img src="https://pic3.zhimg.com/80/v2-96160c6ccda823f78099bcce690ce7d2_720w.jpg" alt="img"></p>
+<p>action recognization task : classify a short trimmed video into a single action label</p>
+<p>action segmentation task（也可以叫做temporal action detection、temporal action localization） : assign an action label for each frame for a minutes-long untrimmed video</p>
+<p>TAL-task一般使用计算好的特征作为模型输入而不是使用原始视频数据</p>
+<p>Instead of using raw RGB video sequences as the input, action segmentation methods operate on pre-extracted frame-wise feature sequences and fo cus on modeling the temporal relations among frames</p>
+<p>Transformer善于处理序列数据，善于对序列数据中的各个元素间的关系建模</p>
+<p>Transformers, originally designed for the machine translation task [41], have achieved great performance for almost all natural language processing(NLP) tasks over the past yearsAction segmentation task is similar to NLP tasks, since both of them are sequence to-sequence prediction tasks</p>
+<p>使用原始transformer的问题以及本文提出的对应的解决方法</p>
+<p>three major concerns</p>
+<p>1.缺乏有效的先验假设（归纳偏置），虽然使得函数集扩大，但需要更多的数据。而本领域的数据集太小</p>
+<p>S：<strong>local connectivity inductive bias</strong> .（because every action occupies continued timestamps）</p>
+<p>  We bring in such strong inductive priors by <strong><u>applying additional temporal convolutions</u></strong> in each layer.</p>
+<p>2.长视频缺乏自注意力，几千帧，自注意力层很难学习到合适的权重。而且导致各个自注意力层无法合作。</p>
+<p>S：constraint each self-attention layer with a <strong>pre-defifined hierarchical resentation pattern</strong>,</p>
+<p>我们用预先预定义的层次表示模式约束每个自注意层，迫使低层次自注意层首先关注局部关系，然后逐渐扩大它们的足迹，以捕获高层中更长的依赖关系。</p>
+<p>3.原始的decoder无法满足此任务的需求，无法优化初始的预测。priorwork都是在encoder后接一个额外的TCN（temporal convolution network）、GCN（graph-based temporal network)</p>
+<p>本文贡献总结：To summarize, the main contributions of this work include: 1) An exploration for Transformer on action segmentation task with three distinctive characteristics: the explicitly introduced local connectivity inductive bias, pre-defifined hierarchical representation pattern, and new design of the decoder; 2) state of-the-art action segmentation results on three public datasets.</p>
+<p><img src="C:\Users\ys\AppData\Roaming\Typora\typora-user-images\image-20211129155215256.png" alt="image-20211129155215256"></p>
+<h4 id="2-Related-Work"><a href="#2-Related-Work" class="headerlink" title="2.Related Work"></a>2.<strong>Related Work</strong></h4><h5 id="Action-Segmentation："><a href="#Action-Segmentation：" class="headerlink" title="Action Segmentation："></a><strong>Action Segmentation</strong>：</h5><p>早期采用滑窗方法、时序建模（CRF、HMM、RNN）  ——&gt;  classify framewise actions</p>
+<p>近期 temporal convolution及其变体   encoder-decoder temporal convolution , deformable temporal convolution，dilated temporal convolution…….</p>
+<p>However, a single convolutional layer does not connect all pairs of input and output positions, which remains room for improvement.</p>
+<p><strong>Transformer</strong>:</p>
+<p>More recently, some researches study the effificient version of Transformer models, which explore<br> attention restrictions to local windows, such as Swin, BigBird.</p>
+<p><strong>Action Detection(存在疑问）</strong> Different from action segmentation task, the action detection task aims</p>
+<p>at localizing the start&#x2F;end of the action and recognizing it in a untrimmed video.</p>
+<p>分为两种主流方式：一步的（端到端，类比目标检测）、两步的（先生成proposal，再对其分类）</p>
+<p>The One stage methods [25, 26] draw on the SSD [27] method in object detection and design end-to-end action detection networks with the similar feature pyramid structures. Two-stage methods adopt the Faster-RCNN [31] architecture, including proposal generation and proposal classifification.</p>
+<p><strong><u>action detection 和action segemention的区别在哪里？</u></strong></p>
+<p>action segmentation methods predict what action is oc-curring at every frame in a video and detection methods out-put a sparse set action segments, where a segment is definedby a start time, end time, and class label. It is possible toconvert between a given segmentation and set of detectionsby simply adding or removing null&#x2F;background segments.</p>
+<p><strong>行为细分</strong>（Action Segmentation）方法预测在一个视频中每一帧出现什么动作。<br><strong>检测</strong>（Detection）方法输出一个稀疏的动作细分集合，这个集合中一个细分由起始时间，和类别标签定义。</p>
+<h4 id="3-Methods"><a href="#3-Methods" class="headerlink" title="3.Methods"></a>3.<strong>Methods</strong></h4><h5 id="3-1-Encoder"><a href="#3-1-Encoder" class="headerlink" title="3.1 Encoder"></a><strong>3.1 Encoder</strong></h5><p>输入：the pre-extracted feature sequences of size <em>T</em> <em>×D</em>, where <em>T</em> is the video length and <em>D</em> is the feature dimension</p>
+<p>首先是线性映射层，然后接N个block，然后接一个FCN来进行多分类</p>
+<p>每个block有两个sub-layer：前馈层和一个单头注意力层仍然使用了残差连接，LN换成了IN，前馈层由全连接层换成了膨胀时序卷积（dilated temporal convolution）</p>
+<p>Each encoder block contains two sub-layers. The fifirst is a feed-forward layer, and the second is a single-head self-attention layer. We employ a residual connection around each of the two sub-layers, followed by instance normalization and ReLU activation</p>
+<p><strong><u>膨胀卷积的采样间隔数d和受约束的self-attention层的window大小随着层数呈指数型增长，逐步提升感受野</u></strong></p>
+<p>Motivated by the success of such a hierarchical pattern, we constraint the receptive fields of each self-attention layer within a local window with size <em>w</em> (<em>e.g</em>. for a frame <em>t</em>, we only calculate the attention weights with the frames that within its local window). The size of the local window is then doubled at each layer <em>i</em> (i.e.,<em>w</em> &#x3D; 2<em>i</em><em>,<em><em>i</em> &#x3D; 1</em>,<em>2</em>…</em>). Meanwhile, we also double the dilation rate of the temporal convolution layer with the encoder depth increasing, keeping consistent with the self-attention layer.</p>
+<p><strong>3.2 Decoder</strong></p>
+<p>输入：the initial predictions output by the encoder（encoder最后的FCN的输出）</p>
+<p>首先也是一个fcn(线性映射层，调整特征维度)，然后接N个block（与encoder基本一致）</p>
+<p>Similar to encoder, we use temporal convolution as the feed-forward layer and the hierarchical pattern is also applied for the cross-attention layer.                                                                                  </p>
+<p>区别：与自注意层相比，交叉注意有以下区别：查询Q和键K从编码器和前一层的输出连接得到，而值V仅从前一层的输出得到。交叉注意机制允许编码器中的每个位置通过生成注意权重来关注细化过程中的所有位置。</p>
+<p>特征空间V完全由输入预测转换，不会被编码器的参与者干扰，因为生成的注意权重只用于执行线性组合。</p>
+<p>设计灵感来自于工作[11]，他们表明细化过程对预测的学习特征空间的干扰非常敏感。</p>
+<p><strong>3.3 Loss Function &amp; Implementation details</strong></p>
+<p>最后的ASformer由一个编码器和三个解码器组成，而每个编码器和解码器包含9个block。将编码器和解码器中的第一个完全连接层的尺寸设置为64，以及每个编码器和解码器块中的特征尺寸。此外，对编码器的输入特征应用一个特殊的dropout层，随机下降整个特征通道，dropout rate为0.3。在所有实验中，我们通过Adam优化器训练模型，学习速率为0.0005。</p>
+<h4 id="4-Dataset"><a href="#4-Dataset" class="headerlink" title="4 Dataset"></a><strong>4 Dataset</strong></h4><p>数据集：50Salads   GTEA    Breakfast</p>
+<p>预先计算的特征：use the I3D [2] model, which is trained on kinetics [2] dataset, to pre-extract feature sequences. The dimension of the I3D feature for each frame is 2048-d. The following three evaluation metrics are used</p>
+<p>评估指标： evaluate the performance: frame-wise accuracy(Acc.), segmental edit score (Edit), and</p>
+<p>segmental overlap F1 score with threshold <em>k</em>&#x2F;100, denoted as F1@*k</p>
+<h4 id="5-Experiments"><a href="#5-Experiments" class="headerlink" title="5 Experiments"></a>5 Experiments</h4><h4 id="基本概念补充："><a href="#基本概念补充：" class="headerlink" title="基本概念补充："></a>基本概念补充：</h4><p>Instance Normalization</p>
+<p>对于图像风格迁移](<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/55948352)[2]%E8%BF%99%E7%B1%BB%E7%9A%84%E6%B3%A8%E9%87%8D%E6%AF%8F%E4%B8%AA%E5%83%8F%E7%B4%A0%E7%9A%84%E4%BB%BB%E5%8A%A1%E6%9D%A5%E8%AF%B4%EF%BC%8C%E6%AF%8F%E4%B8%AA%E6%A0%B7%E6%9C%AC%E7%9A%84%E6%AF%8F%E4%B8%AA%E5%83%8F%E7%B4%A0%E7%82%B9%E7%9A%84%E4%BF%A1%E6%81%AF%E9%83%BD%E6%98%AF%E9%9D%9E%E5%B8%B8%E9%87%8D%E8%A6%81%E7%9A%84%EF%BC%8C%E4%BA%8E%E6%98%AF%E5%83%8F[BN](https://zhuanlan.zhihu.com/p/54171297)[3]%E8%BF%99%E7%A7%8D%E6%AF%8F%E4%B8%AA%E6%89%B9%E9%87%8F%E7%9A%84%E6%89%80%E6%9C%89%E6%A0%B7%E6%9C%AC%E9%83%BD%E5%81%9A%E5%BD%92%E4%B8%80%E5%8C%96%E7%9A%84%E7%AE%97%E6%B3%95%E5%B0%B1%E4%B8%8D%E5%A4%AA%E9%80%82%E7%94%A8%E4%BA%86%EF%BC%8C%E5%9B%A0%E4%B8%BABN%E8%AE%A1%E7%AE%97%E5%BD%92%E4%B8%80%E5%8C%96%E7%BB%9F%E8%AE%A1%E9%87%8F%E6%97%B6%E8%80%83%E8%99%91%E4%BA%86%E4%B8%80%E4%B8%AA%E6%89%B9%E9%87%8F%E4%B8%AD%E6%89%80%E6%9C%89%E5%9B%BE%E7%89%87%E7%9A%84%E5%86%85%E5%AE%B9%EF%BC%8C%E4%BB%8E%E8%80%8C%E9%80%A0%E6%88%90%E4%BA%86%E6%AF%8F%E4%B8%AA%E6%A0%B7%E6%9C%AC%E7%8B%AC%E7%89%B9%E7%BB%86%E8%8A%82%E7%9A%84%E4%B8%A2%E5%A4%B1%E3%80%82%E5%90%8C%E7%90%86%E5%AF%B9%E4%BA%8E[LN](https://zhuanlan.zhihu.com/p/54530247)[4]%E8%BF%99%E7%B1%BB%E9%9C%80%E8%A6%81%E8%80%83%E8%99%91%E4%B8%80%E4%B8%AA%E6%A0%B7%E6%9C%AC%E6%89%80%E6%9C%89%E9%80%9A%E9%81%93%E7%9A%84%E7%AE%97%E6%B3%95%E6%9D%A5%E8%AF%B4%E5%8F%AF%E8%83%BD%E5%BF%BD%E7%95%A5%E4%BA%86%E4%B8%8D%E5%90%8C%E9%80%9A%E9%81%93%E7%9A%84%E5%B7%AE%E5%BC%82%EF%BC%8C%E4%B9%9F%E4%B8%8D%E5%A4%AA%E9%80%82%E7%94%A8%E4%BA%8E%E5%9B%BE%E5%83%8F%E9%A3%8E%E6%A0%BC%E8%BF%81%E7%A7%BB%E8%BF%99%E7%B1%BB%E5%BA%94%E7%94%A8%E3%80%82">https://zhuanlan.zhihu.com/p/55948352)[2]这类的注重每个像素的任务来说，每个样本的每个像素点的信息都是非常重要的，于是像[BN](https://zhuanlan.zhihu.com/p/54171297)[3]这种每个批量的所有样本都做归一化的算法就不太适用了，因为BN计算归一化统计量时考虑了一个批量中所有图片的内容，从而造成了每个样本独特细节的丢失。同理对于[LN](https://zhuanlan.zhihu.com/p/54530247)[4]这类需要考虑一个样本所有通道的算法来说可能忽略了不同通道的差异，也不太适用于图像风格迁移这类应用。</a></p>
+<p>所以这篇文章提出了Instance Normalization（IN），一种更适合对单个像素有更高要求的场景的归一化算法（IST，GAN等）。IN的算法非常简单，计算归一化统计量时考虑单个样本，单个通道的所有元素。IN（右）和BN（中）以及LN（左）的不同从图1中可以非常明显的看出。（F</p>
+<p><img src="https://pic3.zhimg.com/v2-94c40b6f6f41e45f5d254906d70c10ee_r.jpg" alt="preview"></p>
+<p>在图1中 <img src="https://www.zhihu.com/equation?tex=N" alt="[公式]"> 表示样本轴， <img src="https://www.zhihu.com/equation?tex=C" alt="[公式]"> 表示通道轴， <img src="https://www.zhihu.com/equation?tex=F" alt="[公式]"> 是每个通道的特征数量。</p>
+<p>时序卷积网络（Temporal convolutional network， TCN）</p>
+<p>link:<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/150753149">https://zhuanlan.zhihu.com/p/150753149</a></p>
+<h1 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h1><p>​    时序问题的建模大家一般习惯性的采用循环神经网络（RNN）来建模，这是因为RNN天生的循环自回归的结构是对时间序列的很好的表示。传统的卷积神经网络一般认为不太适合时序问题的建模，这主要由于其卷积核大小的限制，不能很好的抓取长时的依赖信息。 但是最近也有很多的工作显示，特定的卷积神经网络结构也可以达到很好的效果，比如Goolgle提出的用来做语音合成的wavenet，Facebook提出的用来做翻译的卷积神经网络。这就带来一个问题，用卷积来做神经网络到底是只适用于特定的领域还是一种普适的模型？ 本文就带着这个问题，将一种特殊的卷积神经网络——时序卷积网络（Temporal convolutional network， TCN）与多种RNN结构相对比，发现在多种任务上TCN都能达到甚至超过RNN模型。</p>
+<h1 id="二、时序卷积神经网络"><a href="#二、时序卷积神经网络" class="headerlink" title="二、时序卷积神经网络"></a>二、时序卷积神经网络</h1><h2 id="2-1-因果卷积（Causal-Convolution）"><a href="#2-1-因果卷积（Causal-Convolution）" class="headerlink" title="2.1 因果卷积（Causal Convolution）"></a>2.1 因果卷积（Causal Convolution）</h2><p>​           <img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9waWMzLnpoaW1nLmNvbS92Mi1mMGIzZTQ1MDUwZjczMzFmMmJjODQzNDczZDIxNGM0YV9yLmpwZw?x-oss-process=image/format,png" alt="preview"></p>
+<p>​    因果卷积可以用上图直观表示。 即对于上一层t时刻的值，只依赖于下一层t时刻及其之前的值。和传统的卷积神经网络的不同之处在于，因果卷积不能看到未来的数据，它是单向的结构，不是双向的。也就是说只有有了前面的因才有后面的果，是一种严格的时间约束模型，因此被成为因果卷积。</p>
+<h2 id="2-2-膨胀卷积（Dilated-Convolution）"><a href="#2-2-膨胀卷积（Dilated-Convolution）" class="headerlink" title="2.2 膨胀卷积（Dilated Convolution）"></a>2.2 膨胀卷积（Dilated Convolution）</h2><p>​    单纯的因果卷积还是存在传统卷积神经网络的问题，即对时间的建模长度受限于卷积核大小的，如果要想抓去更长的依赖关系，就需要线性的堆叠很多的层。为了解决这个问题，研究人员提出了膨胀卷积。如下图所示。</p>
+<p>​                 <img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9waWMyLnpoaW1nLmNvbS92Mi0wMDgzYmVhY2E2NDZkMTNjM2RjM2UzMzU5OGMwNzY2ZF9yLmpwZw?x-oss-process=image/format,png" alt="preview"></p>
+<p>​    和传统卷积不同的是，膨胀卷积允许卷积时的输入存在间隔采样，采样率受图中的d控制。 最下面一层的d&#x3D;1，表示输入时每个点都采样，中间层d&#x3D;2，表示输入时每2个点采样一个作为输入。一般来讲，越高的层级使用的d的大小越大。所以，膨胀卷积使得有效窗口的大小随着层数呈指数型增长。这样卷积网络用比较少的层，就可以获得很大的感受野。</p>
+<h2 id="2-3-残差链接（Residual-Connections）"><a href="#2-3-残差链接（Residual-Connections）" class="headerlink" title="2.3 残差链接（Residual Connections）"></a>2.3 残差链接（Residual Connections）</h2><p>​        <img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9waWMzLnpoaW1nLmNvbS92Mi0zY2U3ZmI3MzlhNmU5ZGQ1ZWQzNDQ1NzVlN2RhZDAxYV9yLmpwZw?x-oss-process=image/format,png" alt="preview"></p>
+<p>​    残差链接被证明是训练深层网络的有效方法，它使得网络可以以跨层的方式传递信息。本文构建了一个残差块来代替一层的卷积。如上图所示，一个残差块包含两层的卷积和非线性映射，在每层中还加入了WeightNorm和Dropout来正则化网络。</p>
+<h1 id="三、讨论和总结"><a href="#三、讨论和总结" class="headerlink" title="三、讨论和总结"></a>三、讨论和总结</h1><p>​    总体来讲，TCN模型上的创新并不是很大，因果卷积和扩展卷积也并不是本论文提出来，本文主要是将TCN的结构梳理了一下，相比于wavenet中的结构，去掉了门机制，加入了残差结构，并在很多的序列问题上进行了实验。实验效果如下：</p>
+<p>​       <img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9waWMyLnpoaW1nLmNvbS84MC92Mi0yMjcxOGQwYzdkZGQwNzk4NWM3N2U5Mjc5ZWRiNDVhZF9oZC5qcGc?x-oss-process=image/format,png" alt="img"></p>
+<p>在多个任务上，都比标准的LSTM、GRU等效果好。</p>
+<h2 id="1-TCN的优点"><a href="#1-TCN的优点" class="headerlink" title="1. TCN的优点"></a>1. TCN的优点</h2><p>  （1）并行性。当给定一个句子时，TCN可以将句子并行的处理，而不需要像RNN那样顺序的处理。</p>
+<p>  （2）灵活的感受野。TCN的感受野的大小受层数、卷积核大小、扩张系数等决定。可以根据不同的任务不同的特性灵活定制。</p>
+<p>  （3）稳定的梯度。RNN经常存在梯度消失和梯度爆炸的问题，这主要是由不同时间段上共用参数导致的，和传统卷积神经网络一样，TCN不太存在梯度消失和爆炸问题。</p>
+<p>  （4）内存更低。RNN在使用时需要将每步的信息都保存下来，这会占据大量的内存，TCN在一层里面卷积核是共享的，内存使用更低。</p>
+<h2 id="2-TCN的缺点"><a href="#2-TCN的缺点" class="headerlink" title="2. TCN的缺点"></a>2. TCN的缺点</h2><p>  （1）TCN 在迁移学习方面可能没有那么强的适应能力。这是因为在不同的领域，模型预测所需要的历史信息量可能是不同的。因此，在将一个模型从一个对记忆信息需求量少的问题迁移到一个需要更长记忆的问题上时，TCN 可能会表现得很差，因为其感受野不够大。</p>
+<p>  （2）论文中描述的TCN还是一种单向的结构，在语音识别和语音合成等任务上，纯单向的结构还是相当有用的。但是在文本中大多使用双向的结构，当然将TCN也很容易扩展成双向的结构，不使用因果卷积，使用传统的卷积结构即可。</p>
+<p>  （3）TCN毕竟是卷积神经网络的变种，虽然使用扩展卷积可以扩大感受野，但是仍然受到限制，相比于Transformer那种可以任意长度的相关信息都可以抓取到的特性还是差了点。TCN在文本中的应用还有待检验。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>MYF
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2022/08/23/ASformer%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" title="ASformer论文笔记">http://example.com/2022/08/23/ASformer论文笔记/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/action-segmentation/" rel="tag"># action segmentation</a>
+              <a href="/tags/transformer/" rel="tag"># transformer</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/08/23/%E5%8A%A8%E4%BD%9C%E6%A3%80%E6%B5%8B%E5%88%86%E5%89%B2%E2%80%94%E8%AF%84%E4%BC%B0%E6%8C%87%E6%A0%87%E8%AF%B4%E6%98%8E/" rel="prev" title="动作检测分割—评估指标说明">
+      <i class="fa fa-chevron-left"></i> 动作检测分割—评估指标说明
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ASformer-Transformer-for-Action-Segmentation"><span class="nav-number">1.</span> <span class="nav-text">ASformer**: Transformer for Action Segmentation**</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Abstract"><span class="nav-number">1.1.</span> <span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Introduction"><span class="nav-number">1.2.</span> <span class="nav-text">1.Introduction</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Related-Work"><span class="nav-number">1.3.</span> <span class="nav-text">2.Related Work</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Action-Segmentation%EF%BC%9A"><span class="nav-number">1.3.1.</span> <span class="nav-text">Action Segmentation：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Methods"><span class="nav-number">1.4.</span> <span class="nav-text">3.Methods</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#3-1-Encoder"><span class="nav-number">1.4.1.</span> <span class="nav-text">3.1 Encoder</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Dataset"><span class="nav-number">1.5.</span> <span class="nav-text">4 Dataset</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-Experiments"><span class="nav-number">1.6.</span> <span class="nav-text">5 Experiments</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E8%A1%A5%E5%85%85%EF%BC%9A"><span class="nav-number">1.7.</span> <span class="nav-text">基本概念补充：</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%BC%95%E8%A8%80"><span class="nav-number"></span> <span class="nav-text">一、引言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%97%B6%E5%BA%8F%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number"></span> <span class="nav-text">二、时序卷积神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%E5%9B%A0%E6%9E%9C%E5%8D%B7%E7%A7%AF%EF%BC%88Causal-Convolution%EF%BC%89"><span class="nav-number"></span> <span class="nav-text">2.1 因果卷积（Causal Convolution）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E8%86%A8%E8%83%80%E5%8D%B7%E7%A7%AF%EF%BC%88Dilated-Convolution%EF%BC%89"><span class="nav-number"></span> <span class="nav-text">2.2 膨胀卷积（Dilated Convolution）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-%E6%AE%8B%E5%B7%AE%E9%93%BE%E6%8E%A5%EF%BC%88Residual-Connections%EF%BC%89"><span class="nav-number"></span> <span class="nav-text">2.3 残差链接（Residual Connections）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E8%AE%A8%E8%AE%BA%E5%92%8C%E6%80%BB%E7%BB%93"><span class="nav-number"></span> <span class="nav-text">三、讨论和总结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-TCN%E7%9A%84%E4%BC%98%E7%82%B9"><span class="nav-number"></span> <span class="nav-text">1. TCN的优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-TCN%E7%9A%84%E7%BC%BA%E7%82%B9"><span class="nav-number"></span> <span class="nav-text">2. TCN的缺点</span></a></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="MYF"
+      src="/images/yj.png">
+  <p class="site-author-name" itemprop="name">MYF</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jackaihfia2334" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jackaihfia2334" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/31801045@gmail.com" title="E-Mail → 31801045@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">myf</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+<script src="https://unpkg.com/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+
+<script>
+var options = {
+  bottom: '64px',
+  right: 'unset',
+  left: '64px',
+  time: '0.5s',
+  mixColor: 'transparent',
+  backgroundColor: 'transparent',
+  buttonColorDark: '#000000',
+  buttonColorLight: '#fff',
+  saveInCookies: true,
+  label: '🌓',
+  autoMatchOsTheme: true
+}
+const darkmode = new Darkmode(options);
+window.darkmode = darkmode;
+darkmode.showWidget();
+</script>
+
+  <!--动态线条背景-->
+  <script type="text/javascript"
+  color="220,220,220" opacity='0.7' zIndex="-2" count="200" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js">
+  </script>
+
+  <!-- 页面点击小红心 -->
+  <script type="text/javascript" src="/js/love.js">
+  </script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/tororo.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
+
