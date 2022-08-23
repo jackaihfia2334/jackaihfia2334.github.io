@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Python1.functools partial详解首先从一个例子说起：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="代码细节随记载">
+<meta property="og:url" content="http://example.com/2021/11/12/%E4%BB%A3%E7%A0%81%E7%BB%86%E8%8A%82%E9%9A%8F%E6%9C%BA/index.html">
+<meta property="og:site_name" content="MYF  ZJU-ISEE">
+<meta property="og:description" content="Python1.functools partial详解首先从一个例子说起：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdn.net/20170804092530371">
+<meta property="og:image" content="https://img-blog.csdn.net/20170804093505666">
+<meta property="og:image" content="https://img-blog.csdn.net/20170804093904291">
+<meta property="og:image" content="https://img-blog.csdn.net/20170804095647822">
+<meta property="og:image" content="https://img-blog.csdn.net/20170804101518145">
+<meta property="og:image" content="https://img-blog.csdn.net/20170804103754439">
+<meta property="og:image" content="https://img-blog.csdn.net/20170804103924888">
+<meta property="og:image" content="https://img2018.cnblogs.com/blog/1498369/201905/1498369-20190504202338298-1508304575.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2020042710180343.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FzbXg2NjY=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200427102557964.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FzbXg2NjY=,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2021-11-12T14:47:20.000Z">
+<meta property="article:modified_time" content="2022-08-23T15:47:38.744Z">
+<meta property="article:author" content="MYF">
+<meta property="article:tag" content="code">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdn.net/20170804092530371">
+
+<link rel="canonical" href="http://example.com/2021/11/12/%E4%BB%A3%E7%A0%81%E7%BB%86%E8%8A%82%E9%9A%8F%E6%9C%BA/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>代码细节随记载 | MYF  ZJU-ISEE</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<style>.darkmode--activated{--body-bg-color:#282828;--content-bg-color:#333;--card-bg-color:#555;--text-color:#ccc;--blockquote-color:#bbb;--link-color:#ccc;--link-hover-color:#eee;--brand-color:#ddd;--brand-hover-color:#ddd;--table-row-odd-bg-color:#282828;--table-row-hover-bg-color:#363636;--menu-item-bg-color:#555;--btn-default-bg:#222;--btn-default-color:#ccc;--btn-default-border-color:#555;--btn-default-hover-bg:#666;--btn-default-hover-color:#ccc;--btn-default-hover-border-color:#666;--highlight-background:#282b2e;--highlight-foreground:#a9b7c6;--highlight-gutter-background:#34393d;--highlight-gutter-foreground:#9ca9b6}.darkmode--activated img{opacity:.75}.darkmode--activated img:hover{opacity:.9}.darkmode--activated code{color:#69dbdc;background:0 0}button.darkmode-toggle{z-index:9999}.darkmode-ignore,img{display:flex!important}.beian img{display:inline-block!important}</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">MYF  ZJU-ISEE</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">When the world turns its back on you, you turn your back on the world</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/11/12/%E4%BB%A3%E7%A0%81%E7%BB%86%E8%8A%82%E9%9A%8F%E6%9C%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/yj.png">
+      <meta itemprop="name" content="MYF">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MYF  ZJU-ISEE">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          代码细节随记载
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-11-12 22:47:20" itemprop="dateCreated datePublished" datetime="2021-11-12T22:47:20+08:00">2021-11-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-08-23 23:47:38" itemprop="dateModified" datetime="2022-08-23T23:47:38+08:00">2022-08-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python/Pytorch/" itemprop="url" rel="index"><span itemprop="name">Pytorch</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="Python"><a href="#Python" class="headerlink" title="Python"></a>Python</h4><h5 id="1-functools-partial详解"><a href="#1-functools-partial详解" class="headerlink" title="1.functools partial详解"></a>1.functools partial详解</h5><p>首先从一个例子说起：</p>
+<p><img src="https://img-blog.csdn.net/20170804092530371" alt="img"></p>
+<span id="more"></span> 
+
+<p>首先我们定义了一个function add ，它接收两个参数a和b，返回a和b的和。然后我们使用partial ，第一个参数是fun ，即传入我们的函数add，然后 再传入一个参数 ，这里是 1 ，它返回给我们一个新的function （addOne）。我们发现这个新的function 只需要接受一个参数，然后返回这个参数与 1 的和。看起来其实相当于我们在使用add函数时固定了a的值为1（注意是从左到右固定参数的值，你可以自己定义一个减法测试）。那我们是不是 可以固定多个参数的，当然是可以的，看下面这个例子：<img src="https://img-blog.csdn.net/20170804093505666" alt="img"></p>
+<p>可以看出我们是可以固定多个参数的，如上面的addTwo函数相对于原函数add固定了a和b的值 。 </p>
+<p>有了初步的印象，接下来让我们来看看官方给出的定义：</p>
+<p><img src="https://img-blog.csdn.net/20170804093904291" alt="img"></p>
+<p>其中*args 和 <strong>keywords 表示参数不定的情况：*args表示任何多个无名参数,它是一个tuple；</strong>keywords表示关键字参数,它是一个dict。 看起来有些复杂，我们忽略**keywords，其实这个函数的功能类似于这样：</p>
+<p><img src="https://img-blog.csdn.net/20170804095647822" alt="img"></p>
+<p>我们使用print来打印参数以看下到底是个怎样的流程：</p>
+<p><img src="https://img-blog.csdn.net/20170804101518145" alt="img"></p>
+<p>实际上我们是固定了a的值为2，b的值为3，当传入4的时候相当于c的值为4。你可以把官方给出的partial函数copy到console，加上print来 查看更详细的过程。这里只简要举个类似的情况。</p>
+<p>举个粒子~~我们来瞧瞧为什么要使用它：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random <span class="keyword">as</span> RND</span><br><span class="line">fnx = <span class="keyword">lambda</span>: RND.randint(<span class="number">0</span>, <span class="number">10</span>)</span><br><span class="line">data = [ (fnx(), fnx()) <span class="keyword">for</span> c <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>) ]</span><br><span class="line">target = (<span class="number">2</span>, <span class="number">4</span>)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">euclid_dist</span>(<span class="params">v1, v2</span>):</span><br><span class="line">    x1, y1 = v1</span><br><span class="line">    x2, y2 = v2</span><br><span class="line">    <span class="keyword">return</span> math.sqrt((x2 - x1)**<span class="number">2</span> + (y2 - y1)**<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<p>其中data中包含了一系列的点的坐标，我们想要计算这些点到target点的距离并且进行排序。<br>于是我们使用sort函数 ：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data.sort(key=euclid_dist)</span><br></pre></td></tr></table></figure>
+
+<p>但是报错如下：</p>
+<p><img src="https://img-blog.csdn.net/20170804103754439" alt="img"></p>
+<p>sort函数只接受这样一个函数——这个函数只有一个参数。<br>于是乎我们的partial就派上用场了：<img src="https://img-blog.csdn.net/20170804103924888" alt="img"></p>
+<h4 id="pandas"><a href="#pandas" class="headerlink" title="pandas"></a>pandas</h4><h5 id="1-df-iloc"><a href="#1-df-iloc" class="headerlink" title="1.df.iloc[]"></a>1.df.iloc[]</h5><p>iloc是基于整数型位置参数来进行检索，也可以是一个布尔值数组<br>允许的参数有：</p>
+<p>先构建一个实例<br>import pandas as pd<br>import matplotlib.pyplot as plt<br>df &#x3D; pd.DataFrame(index&#x3D;[‘小明’,’小红’,’小王’],data&#x3D;{‘height’:[178,171,185],’weight’:[156,90,140]})<br>df<br>        height	weight<br>小明	178		156<br>小红	171		90<br>小王	185		140<br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>一个整数<br>df.iloc[2] #如果只有一个参数，那么默认是行</p>
+<p>height    185<br>weight    140<br>Name: 小王, dtype: int64<br>1<br>2<br>3<br>4<br>5<br>一个数组<br>df.iloc[[0,2]]</p>
+<pre><code>height	weight
+</code></pre>
+<p>小明	178	156<br>小王	185	140<br>1<br>2<br>3<br>4<br>5<br>一个整数的切片<br>df.iloc[1:2]#依旧是左闭右开</p>
+<pre><code>height	weight
+</code></pre>
+<p>小红	171	90<br>1<br>2<br>3<br>4<br>一个布尔数组<br>df.iloc[[True,False,True]]#数组长度要和数据集长度匹配</p>
+<pre><code>height	weight
+</code></pre>
+<p>小明	178	156<br>小王	185	140<br>1<br>2<br>3<br>4<br>5<br>函数<br>df.iloc[lambda x: x.index &#x3D;&#x3D; ‘小王’]</p>
+<pre><code>height	weight
+</code></pre>
+<p>小王	185	140</p>
+<h4 id="Pytorch"><a href="#Pytorch" class="headerlink" title="Pytorch"></a>Pytorch</h4><h5 id="nn-LayerNorm"><a href="#nn-LayerNorm" class="headerlink" title="nn.LayerNorm"></a>nn.LayerNorm</h5><p>LayerNorm参数<br>torch.nn.LayerNorm(<br>        normalized_shape: Union[int, List[int], torch.Size],<br>        eps: float &#x3D; 1e-05,<br>        elementwise_affine: bool &#x3D; True)<br>normalized_shape<br>如果传入整数，比如4，则被看做只有一个整数的list，此时LayerNorm会对输入的最后一维进行归一化，这个int值需要和输入的最后一维一样大。</p>
+<p>假设此时输入的数据维度是[3, 4]，则对3个长度为4的向量求均值方差，得到3个均值和3个方差，分别对这3行进行归一化（每一行的4个数字都是均值为0，方差为1）；LayerNorm中的weight和bias也分别包含4个数字，重复使用3次，对每一行进行仿射变换（仿射变换即乘以weight中对应的数字后，然后加bias中对应的数字），并会在反向传播时得到学习。<br>如果输入的是个list或者torch.Size，比如[3, 4]或torch.Size([3, 4])，则会对网络最后的两维进行归一化，且要求输入数据的最后两维尺寸也是[3, 4]。</p>
+<p>假设此时输入的数据维度也是[3, 4]，首先对这12个数字求均值和方差，然后归一化这个12个数字；weight和bias也分别包含12个数字，分别对12个归一化后的数字进行仿射变换（仿射变换即乘以weight中对应的数字后，然后加bias中对应的数字），并会在反向传播时得到学习。<br>假设此时输入的数据维度是[N, 3, 4]，则对着N个[3,4]做和上述一样的操作，只是此时做仿射变换时，weight和bias被重复用了N次。<br>假设此时输入的数据维度是[N, T, 3, 4]，也是一样的，维度可以更多。<br>注意：显然LayerNorm中weight和bias的shape就是传入的normalized_shape。</p>
+<p>eps<br>归一化时加在分母上防止除零。</p>
+<p>elementwise_affine<br>如果设为False，则LayerNorm层不含有任何可学习参数。</p>
+<p>如果设为True（默认是True）则会包含可学习参数weight和bias，用于仿射变换，即对输入数据归一化到均值0方差1后，乘以weight，即bias。</p>
+<h5 id="torch-roll"><a href="#torch-roll" class="headerlink" title="torch.roll"></a>torch.roll</h5><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># swin transformer中移位的操作</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">CyclicShift</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params"><span class="variable language_">self</span>, displacement</span>):</span><br><span class="line">        <span class="variable language_">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.displacement = displacement</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params"><span class="variable language_">self</span>, x</span>):</span><br><span class="line">        <span class="keyword">return</span> torch.roll(x, shifts=(<span class="variable language_">self</span>.displacement, <span class="variable language_">self</span>.displacement), dims=(<span class="number">1</span>, <span class="number">2</span>))</span><br></pre></td></tr></table></figure>
+
+<p>torch.roll(input, shifts, dims&#x3D;None) 这个函数到底是干啥的，咋用的呢？<br> 简单说，它就是用来移位的，是顺移。input是咱们要移动的tensor向量，shifts是要移动到的位置，要移动去哪儿，<strong>dims是在什么维度去移动(这里的dim跟一般操作有所不同，以二维张量为例，dim0表示行，dim1表示列）</strong>如2维的数据，那就两个方向，横着或者竖着。对了，关键的一句话，所有操作针对第一行或者第一列，主要是这个”第一”，下面举例子给大家做解释，自己慢慢体会</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; x = torch.tensor([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]).view(<span class="number">3</span>, <span class="number">3</span>)</span><br><span class="line">&gt;&gt;&gt; x</span><br><span class="line">tensor([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]])</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; torch.roll(x, <span class="number">1</span>, <span class="number">0</span>)</span><br><span class="line">tensor([[<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>],</span><br><span class="line">        [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>]])</span><br></pre></td></tr></table></figure>
+
+<p>torch.roll(x, 1, 0) 这行代码的意思就是把x的第一行(0维度)移到1这个位置上，其他位置的数据顺移。<br> x——咱们要移动的向量<br> 1——第一行向量要移动到的最终位置<br> 0——从行的角度去移动</p>
+<p>再来一个列的例子</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; x = torch.tensor([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]).view(<span class="number">3</span>, <span class="number">3</span>)</span><br><span class="line">&gt;&gt;&gt; x</span><br><span class="line">tensor([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]])</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; torch.roll(x, -<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">&gt;&gt;&gt; x</span><br><span class="line">tensor([[<span class="number">2</span>, <span class="number">3</span>, <span class="number">1</span>],</span><br><span class="line">        [<span class="number">5</span>, <span class="number">6</span>, <span class="number">4</span>],</span><br><span class="line">        [<span class="number">8</span>, <span class="number">9</span>, <span class="number">7</span>]])</span><br></pre></td></tr></table></figure>
+
+<p>torch.roll(x, -1, 1) 这行代码的意思就是把x的第一列(1维度)移到-1这个位置(最后一个位置)上，其他位置的数据顺移。</p>
+<p>shifts和dims可以是元组，其实就是分步骤去移动，再举个例子</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; x = torch.tensor([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]).view(<span class="number">3</span>, <span class="number">3</span>)</span><br><span class="line">&gt;&gt;&gt; x</span><br><span class="line">tensor([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]])</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; torch.roll(x, (<span class="number">0</span>,<span class="number">1</span>), (<span class="number">1</span>,<span class="number">1</span>))</span><br><span class="line">tensor([[<span class="number">3</span>, <span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="number">6</span>, <span class="number">4</span>, <span class="number">5</span>],</span><br><span class="line">        [<span class="number">9</span>, <span class="number">7</span>, <span class="number">8</span>]])</span><br></pre></td></tr></table></figure>
+
+<p>torch.roll(x, (0,1), (1,1)) 这行代码的意思：<br> 第一步，把x的第一列(1维度)移到0这个位置(原地不动)上，其他位置的数据顺移。(所有数据原地不动)</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; x = torch.tensor([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]).view(<span class="number">3</span>, <span class="number">3</span>)</span><br><span class="line">&gt;&gt;&gt; x</span><br><span class="line">tensor([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]])</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; a = torch.roll(x, <span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">&gt;&gt;&gt; a</span><br><span class="line">tensor([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]])</span><br></pre></td></tr></table></figure>
+
+<p>第二步，把a的第一列(1维度)移到1这个位置上，其他位置的数据顺移。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; a = torch.roll(x, <span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">&gt;&gt;&gt; a</span><br><span class="line">tensor([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]])</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; b = torch.roll(a, <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">&gt;&gt;&gt; b</span><br><span class="line">tensor([[<span class="number">3</span>, <span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="number">6</span>, <span class="number">4</span>, <span class="number">5</span>],</span><br><span class="line">        [<span class="number">9</span>, <span class="number">7</span>, <span class="number">8</span>]])</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="permute函数"><a href="#permute函数" class="headerlink" title="permute函数"></a>permute函数</h5><h5 id="contiguous函数"><a href="#contiguous函数" class="headerlink" title="contiguous函数"></a>contiguous函数</h5><p><strong>1 先看看官方中英文doc：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">torch.Tensor.contiguous (Python method, in torch.Tensor)</span><br><span class="line">torch.Tensor.is_contiguous (Python method, in torch.Tensor)</span><br></pre></td></tr></table></figure>
+
+<p><strong>1.1 contiguous() → Tensor</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Returns a contiguous tensor containing the same data as self tensor. If self tensor is contiguous, this function returns the self tensor.</span><br></pre></td></tr></table></figure>
+
+<p><strong>1.2 contiguous() → Tensor</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">返回一个内存连续的有相同数据的tensor，如果原tensor内存连续，则返回原tensor；</span><br></pre></td></tr></table></figure>
+
+<p><strong>2 <a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=pytorch+contiguous&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra=%7B%22sourceType%22:%22article%22,%22sourceId%22:64376950%7D">pytorch contiguous</a>的使用</strong></p>
+<p>contiguous一般与transpose，permute，view搭配使用：使用transpose或permute进行维度变换后，调用contiguous，然后方可使用view对维度进行变形（如：tensor_var.contiguous().view() ），示例如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">x = torch.Tensor(2,3)</span><br><span class="line">y = x.permute(1,0)         # permute：二维tensor的维度变换，此处功能相当于转置transpose</span><br><span class="line">y.view(-1)                 # 报错，view使用前需调用contiguous()函数</span><br><span class="line">y = x.permute(1,0).contiguous()</span><br><span class="line">y.view(-1)                 # OK</span><br></pre></td></tr></table></figure>
+
+<p>具体原因有两种说法：</p>
+<p>1 transpose、permute等维度变换操作后，tensor在内存中不再是连续存储的，而view操作要求tensor的内存连续存储，所以需要contiguous来返回一个contiguous copy；</p>
+<p>2 维度变换后的变量是之前变量的浅拷贝，指向同一区域，即view操作会连带原来的变量一同变形，这是不合法的，所以也会报错；—- 这个解释有部分道理，也即contiguous返回了tensor的深拷贝contiguous copy数据；</p>
+<p>3 contiguous函数分析，参考CSDN博客</p>
+<p>在pytorch中，只有很少几个操作是不改变tensor的内容本身，而只是重新定义下标与元素的对应关系。换句话说，这种操作不进行数据拷贝和数据的改变，变的是元数据，这些操作是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">narrow()，view()，expand()，transpose()；</span><br></pre></td></tr></table></figure>
+
+<p>举个栗子，在使用transpose()进行转置操作时，pytorch并不会创建新的、转置后的tensor，而是修改了tensor中的一些属性（也就是元数据），使得此时的offset和stride是与转置tensor相对应的，而转置的tensor和原tensor的内存是共享的！</p>
+<p>为了证明这一点，我们来看下面的代码：****</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x = torch.randn(3, 2)</span><br><span class="line">y = x.transpose(x, 0, 1)</span><br><span class="line">x[0, 0] = 233</span><br><span class="line">print(y[0, 0])       # print 233</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，改变了x的元素的值的同时，y的元素的值也发生了变化；也即，经过上述操作后得到的tensor，它内部数据的布局方式和从头开始创建一个常规的tensor的布局方式是不一样的！于是就有contiguous()的用武之地了。</p>
+<p>在上面的例子中，x是contiguous的，但y不是（因为内部数据不是通常的布局方式）。注意：不要被contiguous的字面意思“连续的”误解，tensor中数据还是在内存中一块区域里，只是布局的问题！</p>
+<p>*当调用contiguous()时，会强制拷贝一份tensor，让它的布局和从头创建的一模一样；*</p>
+<p>一般来说这一点不用太担心，如果你没在需要调用contiguous()的地方调用contiguous()，运行时会提示你：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RuntimeError: input is not contiguous</span><br></pre></td></tr></table></figure>
+
+<p>只要看到这个错误提示，加上contiguous()就好啦～</p>
+<h5 id="flatten-参数详解"><a href="#flatten-参数详解" class="headerlink" title="flatten()参数详解"></a>flatten()参数详解</h5><p>flatten()是对多维数据的降维函数。<br>flatten(),默认缺省参数为0，也就是说flatten()和flatte(0)效果一样。<br>python里的flatten(dim)表示，从第dim个维度开始展开，将后面的维度转化为一维.也就是说，只保留dim之前的维度，其他维度的数据全都挤在dim这一维。<br>比如一个数据的维度是( S 0 , S 1 , S 2……… , S n ) (S0,S1,S2………,Sn)(S0,S1,S2………,Sn), flatten(m)后的数据为( S 0 ， S 1 ， S 2 ， . . . ， S m − 2 ， S m − 1 ， S m ∗ S m + 1 ∗ S m + 2 ∗ . . . ∗ S n ) (S0，S1，S2，…，Sm-2，Sm-1，Sm<em>Sm+1</em>Sm+2*…*Sn)(S0，S1，S2，…，Sm−2，Sm−1，Sm∗Sm+1∗Sm+2∗…∗Sn)</p>
+<p> nn.AdaptiveAvgPool1d &amp; nn.AdaptiveAvgPool2d</p>
+<p>eg1 </p>
+<p><code>m = nn.AdaptiveAvgPool1d(1)</code></p>
+<p><code>input = torch.randn(12, 64, 8)</code></p>
+<p><code>output = m(input)</code></p>
+<p><code>print(output.shape())</code></p>
+<p>输出(12，64，1）</p>
+<p>eg2</p>
+<p><code>m = nn.AdaptiveAvgPool2d((5,6))</code></p>
+<p><code>input = torch.randn(12, 64, 8)</code></p>
+<p><code>output = m(input)</code></p>
+<p><code>print(output.shape())</code></p>
+<p>输出(12，5，6）</p>
+<h4 id="Conv1d-amp-Conv2d"><a href="#Conv1d-amp-Conv2d" class="headerlink" title="Conv1d&amp;Conv2d"></a>Conv1d&amp;Conv2d</h4><p>输入数据格式如下：</p>
+<p><img src="https://img2018.cnblogs.com/blog/1498369/201905/1498369-20190504202338298-1508304575.png" alt="img"></p>
+<p>Conv1d类比，输入数据格式是（Batch_szie, Channel, Length of text）</p>
+<p>class torch.nn.Conv1d(in_channels, out_channels, kernel_size, stride&#x3D;1, padding&#x3D;0, dilation&#x3D;1, groups&#x3D;1, bias&#x3D;True)</p>
+<p>in_channels(int) – 输入信号的通道。在文本分类中，即为词向量的维度<br>out_channels(int) – 卷积产生的通道。有多少个out_channels，就需要多少个1维卷积<br>kernel_size(int or tuple) - 卷积核的尺寸，卷积核的大小为(k,)，第二个维度是由in_channels来决定的，所以实际上卷积大小为kernel_size*in_channels<br>stride(int or tuple, optional) - 卷积步长<br>padding (int or tuple, optional)- 输入的每一条边补充0的层数<br>dilation(int or tuple, &#96;optional&#96;&#96;) – 卷积核元素之间的间距<br>groups(int, optional) – 从输入通道到输出通道的阻塞连接数<br>bias(bool, optional) - 如果bias&#x3D;True，添加偏置<br>举个例子:</p>
+<p>conv1 &#x3D; nn.Conv1d(in_channels&#x3D;256，out_channels&#x3D;100,kernel_size&#x3D;2)<br>input &#x3D; torch.randn(32,35,256)</p>
+<p>batch_size x text_len x embedding_size -&gt; batch_size x embedding_size x text_len</p>
+<p>input &#x3D; input.permute(0,2,1)<br>out &#x3D; conv1(input)<br>print(out.size())<br>这里32为batch_size，35为句子最大长度，256为词向量</p>
+<p>再输入一维卷积的时候，需要将32<em>35</em>256变换为32<em>256</em>35，因为一维卷积是在最后维度上扫的，最后out的大小即为：32 <em>100</em>（35-2+1）&#x3D;32 <em>100</em> 34</p>
+<h4 id="Pytorch中transpose与numpy中transpose的异同"><a href="#Pytorch中transpose与numpy中transpose的异同" class="headerlink" title="Pytorch中transpose与numpy中transpose的异同"></a>Pytorch中transpose与numpy中transpose的异同</h4><p>相同点，都用于作不同维度间的转换，且都是深拷贝，不影响原来的</p>
+<h3 id="张量乘法"><a href="#张量乘法" class="headerlink" title="张量乘法"></a>张量乘法</h3><p>  1.torch.bmm </p>
+<p><strong>函数作用</strong><br>计算两个tensor的矩阵乘法，torch.bmm(a,b),tensor a 的size为(b,h,w),tensor b的size为(b,w,h),注意两个tensor的维度必须为3</p>
+<ol start="2">
+<li>torch.matmul</li>
+</ol>
+<p><img src="https://img-blog.csdnimg.cn/2020042710180343.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FzbXg2NjY=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><img src="https://img-blog.csdnimg.cn/20200427102557964.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FzbXg2NjY=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h4 id="PyTorch实现MLP的两种方法，以及nn-Conv1d-kernel-size-x3D-1和nn-Linear的区别"><a href="#PyTorch实现MLP的两种方法，以及nn-Conv1d-kernel-size-x3D-1和nn-Linear的区别" class="headerlink" title="PyTorch实现MLP的两种方法，以及nn.Conv1d, kernel_size&#x3D;1和nn.Linear的区别"></a>PyTorch实现MLP的两种方法，以及nn.Conv1d, kernel_size&#x3D;1和nn.Linear的区别</h4><p>两者可以实现同样结构的MLP计算，但计算形式不同，具体为：</p>
+<p>nn.Conv1d输入的是一个[batch, channel, length]，3维tensor，</p>
+<p>而nn.Linear输入的是一个[batch, *,in_features]，可变形状tensor，在进行等价计算时务必保证nn.Linear输入tensor为三维</p>
+<p>nn.Conv1d作用在第二个维度位置channel，nn.Linear作用在第三个维度位置in_features，对于一个X，若要在两者之间进行等价计算，需要进行tensor.permute，重新排列维度轴秩序</p>
+<p>详见博客：<a target="_blank" rel="noopener" href="https://blog.csdn.net/l1076604169/article/details/107170146">https://blog.csdn.net/l1076604169/article/details/107170146</a></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>MYF
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2021/11/12/%E4%BB%A3%E7%A0%81%E7%BB%86%E8%8A%82%E9%9A%8F%E6%9C%BA/" title="代码细节随记载">http://example.com/2021/11/12/代码细节随机/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/code/" rel="tag"># code</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/10/23/%E5%8A%A8%E4%BD%9C%E6%A3%80%E6%B5%8B%E5%88%86%E5%89%B2%E2%80%94%E8%AF%84%E4%BC%B0%E6%8C%87%E6%A0%87%E8%AF%B4%E6%98%8E/" rel="prev" title="动作检测分割—评估指标说明">
+      <i class="fa fa-chevron-left"></i> 动作检测分割—评估指标说明
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/11/21/Baseline1-note-code/" rel="next" title="毕设Baseline1代码结构和笔记">
+      毕设Baseline1代码结构和笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Python"><span class="nav-number">1.</span> <span class="nav-text">Python</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-functools-partial%E8%AF%A6%E8%A7%A3"><span class="nav-number">1.1.</span> <span class="nav-text">1.functools partial详解</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#pandas"><span class="nav-number">2.</span> <span class="nav-text">pandas</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-df-iloc"><span class="nav-number">2.1.</span> <span class="nav-text">1.df.iloc[]</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Pytorch"><span class="nav-number">3.</span> <span class="nav-text">Pytorch</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#nn-LayerNorm"><span class="nav-number">3.1.</span> <span class="nav-text">nn.LayerNorm</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#torch-roll"><span class="nav-number">3.2.</span> <span class="nav-text">torch.roll</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#permute%E5%87%BD%E6%95%B0"><span class="nav-number">3.3.</span> <span class="nav-text">permute函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#contiguous%E5%87%BD%E6%95%B0"><span class="nav-number">3.4.</span> <span class="nav-text">contiguous函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#flatten-%E5%8F%82%E6%95%B0%E8%AF%A6%E8%A7%A3"><span class="nav-number">3.5.</span> <span class="nav-text">flatten()参数详解</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Conv1d-amp-Conv2d"><span class="nav-number">4.</span> <span class="nav-text">Conv1d&amp;Conv2d</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Pytorch%E4%B8%ADtranspose%E4%B8%8Enumpy%E4%B8%ADtranspose%E7%9A%84%E5%BC%82%E5%90%8C"><span class="nav-number">5.</span> <span class="nav-text">Pytorch中transpose与numpy中transpose的异同</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%A0%E9%87%8F%E4%B9%98%E6%B3%95"><span class="nav-number"></span> <span class="nav-text">张量乘法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#PyTorch%E5%AE%9E%E7%8E%B0MLP%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%96%B9%E6%B3%95%EF%BC%8C%E4%BB%A5%E5%8F%8Ann-Conv1d-kernel-size-x3D-1%E5%92%8Cnn-Linear%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.</span> <span class="nav-text">PyTorch实现MLP的两种方法，以及nn.Conv1d, kernel_size&#x3D;1和nn.Linear的区别</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="MYF"
+      src="/images/yj.png">
+  <p class="site-author-name" itemprop="name">MYF</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jackaihfia2334" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jackaihfia2334" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/31801045@gmail.com" title="E-Mail → 31801045@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">myf</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+<script src="https://unpkg.com/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+
+<script>
+var options = {
+  bottom: '64px',
+  right: 'unset',
+  left: '64px',
+  time: '0.5s',
+  mixColor: 'transparent',
+  backgroundColor: 'transparent',
+  buttonColorDark: '#000000',
+  buttonColorLight: '#fff',
+  saveInCookies: true,
+  label: '🌓',
+  autoMatchOsTheme: true
+}
+const darkmode = new Darkmode(options);
+window.darkmode = darkmode;
+darkmode.showWidget();
+</script>
+
+  <!--动态线条背景-->
+  <script type="text/javascript"
+  color="220,220,220" opacity='0.7' zIndex="-2" count="200" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js">
+  </script>
+
+  <!-- 页面点击小红心 -->
+  <script type="text/javascript" src="/js/love.js">
+  </script>
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/tororo.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
+
