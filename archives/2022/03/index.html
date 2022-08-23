@@ -20,23 +20,15 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="毕设baseline1代码结构和笔记1.sub-sample-rate就是新的采样率 ，这里设置为2 CrossTaskDataset中，已经将gt信息写入h5py文件中了 2.破案了，在ProceL数据集中有segment的存在，因此有这个方法的应用 attention_summarization中也有这样的操作，aggregated_features将同一片段不同帧的特征mean成一个  T-">
-<meta property="og:type" content="article">
-<meta property="og:title" content="毕设Baseline1代码结构和笔记">
-<meta property="og:url" content="http://example.com/2021/11/21/Baseline1-note-code/index.html">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="MYF  ZJU-ISEE">
+<meta property="og:url" content="http://example.com/archives/2022/03/index.html">
 <meta property="og:site_name" content="MYF  ZJU-ISEE">
-<meta property="og:description" content="毕设baseline1代码结构和笔记1.sub-sample-rate就是新的采样率 ，这里设置为2 CrossTaskDataset中，已经将gt信息写入h5py文件中了 2.破案了，在ProceL数据集中有segment的存在，因此有这个方法的应用 attention_summarization中也有这样的操作，aggregated_features将同一片段不同帧的特征mean成一个  T-">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="c:/hexo/source_posts/image/image-20211128205936133.png">
-<meta property="article:published_time" content="2021-11-21T08:52:06.000Z">
-<meta property="article:modified_time" content="2022-08-23T15:27:56.126Z">
 <meta property="article:author" content="MYF">
-<meta property="article:tag" content="code">
-<meta property="article:tag" content="note">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="c:/hexo/source_posts/image/image-20211128205936133.png">
 
-<link rel="canonical" href="http://example.com/2021/11/21/Baseline1-note-code/">
+<link rel="canonical" href="http://example.com/archives/2022/03/">
 
 
 <script id="page-configurations">
@@ -44,12 +36,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : true,
+    isPost : false,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>毕设Baseline1代码结构和笔记 | MYF  ZJU-ISEE</title>
+  <title>归档 | MYF  ZJU-ISEE</title>
   
 
 
@@ -148,148 +140,50 @@
         <div class="content-wrap">
           
 
-          <div class="content post posts-expand">
+          <div class="content archive">
             
 
-    
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/11/21/Baseline1-note-code/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/yj.png">
-      <meta itemprop="name" content="MYF">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MYF  ZJU-ISEE">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          毕设Baseline1代码结构和笔记
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-11-21 16:52:06" itemprop="dateCreated datePublished" datetime="2021-11-21T16:52:06+08:00">2021-11-21</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-08-23 23:27:56" itemprop="dateModified" datetime="2022-08-23T23:27:56+08:00">2022-08-23</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Research/" itemprop="url" rel="index"><span itemprop="name">Research</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span id="busuanzi_value_page_pv"></span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
+  
+  <div class="post-block">
+    <div class="posts-collapse">
+      <div class="collection-title">
+        <span class="collection-header">嗯..! 目前共计 14 篇日志。 继续努力。</span>
+      </div>
 
       
-        <h3 id="毕设baseline1代码结构和笔记"><a href="#毕设baseline1代码结构和笔记" class="headerlink" title="毕设baseline1代码结构和笔记"></a>毕设baseline1代码结构和笔记</h3><h4 id="1"><a href="#1" class="headerlink" title="1."></a>1.</h4><p>sub-sample-rate就是新的采样率 ，这里设置为2</p>
-<p>CrossTaskDataset中，已经将gt信息写入h5py文件中了</p>
-<h4 id="2"><a href="#2" class="headerlink" title="2."></a>2.</h4><p>破案了，在ProceL数据集中有segment的存在，因此有这个方法的应用</p>
-<p>attention_summarization中也有这样的操作，aggregated_features将同一片段不同帧的特征mean成一个  T-&gt;S</p>
-<p> # 现在的情况就是T&#x3D;S，没有真正意义上的segment的存在，因为提取的feature就是降采样后提取的，feature[1,T,49,521]中的T不是视频原本的帧数</p>
-<p>subsample-segment_list以及函数aggregated_keysteps 的作用不明确 </p>
-<p> 实验证明经过aggregated_keysteps处理后的key_step_lables和处理前的key_step-list是一致的</p>
-<p>函数定义如下</p>
-<p>def aggregated_keysteps(subsampled_segment_list, key_step_list):</p>
-<p>  “””</p>
-<p>  Function which aggregate the subsampled keysteps assigning the keystep which is found in majority for each segment</p>
-<p>  Parameters</p>
-<p>  -———</p>
-<p>  subsampled_segment_list: subsampled list of segments key_step_list: a list denoting the key step number each frame belongs to.</p>
-<p>  Returns</p>
-<p>  -——</p>
-<p>  batch_aggregated_key_list: list denoting which segment in the aggregated</p>
-<p>  feature belongs to which key step</p>
-<p>  “””-</p>
-<h4 id="3-模型中的数据流动"><a href="#3-模型中的数据流动" class="headerlink" title="3.模型中的数据流动"></a>3.模型中的数据流动</h4><h4 id="4-评估方式"><a href="#4-评估方式" class="headerlink" title="4.评估方式"></a>4.评估方式</h4><p> Mof（分为是否per-keystep())</p>
-<p>++++++++++++</p>
-<p>有应用内置的匈牙利算法实现linear_sum_assignment来实现分配</p>
-<p><img src="C:\hexo\source_posts\image\image-20211128205936133.png"></p>
-<h4 id="5-bug-and-warning"><a href="#5-bug-and-warning" class="headerlink" title="5 bug and warning"></a>5 bug and warning</h4><p>runtime error</p>
-<p>&#x2F;data&#x2F;yufan&#x2F;eccv20&#x2F;core&#x2F;FeatureVGGDataset_CrossTask.py:180: H5pyDeprecationWarning: dataset.value has been deprecated. Use dataset[()] instead.</p>
-<p>UserWarning: nn.functional.tanh is deprecated. Use torch.tanh instead.<br>  warnings.warn(“nn.functional.tanh is deprecated. Use torch.tanh instead.”)</p>
-
+    <div class="collection-year">
+      <span class="collection-header">2022</span>
     </div>
 
-    
-    
-    
-        
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
 
-<div>
-<ul class="post-copyright">
-  <li class="post-copyright-author">
-    <strong>本文作者： </strong>MYF
-  </li>
-  <li class="post-copyright-link">
-    <strong>本文链接：</strong>
-    <a href="http://example.com/2021/11/21/Baseline1-note-code/" title="毕设Baseline1代码结构和笔记">http://example.com/2021/11/21/Baseline1-note-code/</a>
-  </li>
-  <li class="post-copyright-license">
-    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
-  </li>
-</ul>
-</div>
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2022-03-23T23:18:22+08:00"
+              content="2022-03-23">
+          03-23
+        </time>
+      </div>
 
+      <div class="post-title">
+          <a class="post-title-link" href="/2022/03/23/ASformer%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" itemprop="url">
+            <span itemprop="name">ASformer论文笔记</span>
+          </a>
+      </div>
 
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/code/" rel="tag"># code</a>
-              <a href="/tags/note/" rel="tag"># note</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/2021/11/12/%E4%BB%A3%E7%A0%81%E7%BB%86%E8%8A%82%E9%9A%8F%E6%9C%BA/" rel="prev" title="代码细节随记载">
-      <i class="fa fa-chevron-left"></i> 代码细节随记载
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/2022/02/23/%E8%87%AA%E7%9B%91%E7%9D%A3%E9%A2%84%E8%AE%AD%E7%BB%83/" rel="next" title="自监督预训练">
-      自监督预训练 <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
+    </header>
   </article>
+
+
+    </div>
+  </div>
   
   
+  
+
   
 
 
@@ -342,7 +236,6 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AF%95%E8%AE%BEbaseline1%E4%BB%A3%E7%A0%81%E7%BB%93%E6%9E%84%E5%92%8C%E7%AC%94%E8%AE%B0"><span class="nav-number">1.</span> <span class="nav-text">毕设baseline1代码结构和笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1"><span class="nav-number">1.1.</span> <span class="nav-text">1.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2"><span class="nav-number">1.2.</span> <span class="nav-text">2.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E6%B5%81%E5%8A%A8"><span class="nav-number">1.3.</span> <span class="nav-text">3.模型中的数据流动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E8%AF%84%E4%BC%B0%E6%96%B9%E5%BC%8F"><span class="nav-number">1.4.</span> <span class="nav-text">4.评估方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-bug-and-warning"><span class="nav-number">1.5.</span> <span class="nav-text">5 bug and warning</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

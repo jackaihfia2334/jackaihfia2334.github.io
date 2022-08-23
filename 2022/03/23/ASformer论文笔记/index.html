@@ -23,12 +23,12 @@
   <meta name="description" content="ASformer**: Transformer for Action Segmentation**疑问：代码和论文不一致cross-attention部分 Abstractaction segmentation task the potential of Transformer in modeling the relations among elements in sequential data.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ASformer论文笔记">
-<meta property="og:url" content="http://example.com/2022/08/23/ASformer%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:url" content="http://example.com/2022/03/23/ASformer%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="MYF  ZJU-ISEE">
 <meta property="og:description" content="ASformer**: Transformer for Action Segmentation**疑问：代码和论文不一致cross-attention部分 Abstractaction segmentation task the potential of Transformer in modeling the relations among elements in sequential data.">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://pic3.zhimg.com/80/v2-96160c6ccda823f78099bcce690ce7d2_720w.jpg">
-<meta property="og:image" content="c:/Users/ys/AppData/Roaming/Typora/typora-user-images/image-20211129155215256.png">
+<meta property="og:image" content="c:/hexo/source_posts/image/image-20211130185321867.png">
 <meta property="og:image" content="https://pic3.zhimg.com/v2-94c40b6f6f41e45f5d254906d70c10ee_r.jpg">
 <meta property="og:image" content="https://www.zhihu.com/equation?tex=N">
 <meta property="og:image" content="https://www.zhihu.com/equation?tex=C">
@@ -37,15 +37,15 @@
 <meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9waWMyLnpoaW1nLmNvbS92Mi0wMDgzYmVhY2E2NDZkMTNjM2RjM2UzMzU5OGMwNzY2ZF9yLmpwZw?x-oss-process=image/format,png">
 <meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9waWMzLnpoaW1nLmNvbS92Mi0zY2U3ZmI3MzlhNmU5ZGQ1ZWQzNDQ1NzVlN2RhZDAxYV9yLmpwZw?x-oss-process=image/format,png">
 <meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9waWMyLnpoaW1nLmNvbS84MC92Mi0yMjcxOGQwYzdkZGQwNzk4NWM3N2U5Mjc5ZWRiNDVhZF9oZC5qcGc?x-oss-process=image/format,png">
-<meta property="article:published_time" content="2022-08-23T15:18:22.000Z">
-<meta property="article:modified_time" content="2022-08-23T15:20:30.135Z">
+<meta property="article:published_time" content="2022-03-23T15:18:22.000Z">
+<meta property="article:modified_time" content="2022-08-23T15:32:11.759Z">
 <meta property="article:author" content="MYF">
 <meta property="article:tag" content="action segmentation">
 <meta property="article:tag" content="transformer">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://pic3.zhimg.com/80/v2-96160c6ccda823f78099bcce690ce7d2_720w.jpg">
 
-<link rel="canonical" href="http://example.com/2022/08/23/ASformer%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">
+<link rel="canonical" href="http://example.com/2022/03/23/ASformer%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">
 
 
 <script id="page-configurations">
@@ -164,7 +164,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/23/ASformer%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/23/ASformer%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/yj.png">
@@ -186,10 +186,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2022-08-23 23:18:22 / 修改时间：23:20:30" itemprop="dateCreated datePublished" datetime="2022-08-23T23:18:22+08:00">2022-08-23</time>
+              <time title="创建时间：2022-03-23 23:18:22" itemprop="dateCreated datePublished" datetime="2022-03-23T23:18:22+08:00">2022-03-23</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-08-23 23:32:11" itemprop="dateModified" datetime="2022-08-23T23:32:11+08:00">2022-08-23</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -229,6 +235,8 @@
 <p>3.limitation of the decoder architecture to utilize temporal relations among multiple</p>
 <p>action segments to refifine the initial predictions.</p>
 <p>S:design the decoder to refifine the initial predictions from the encoder. </p>
+<span id="more"></span> 
+
 <h4 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1.Introduction"></a>1.<strong>Introduction</strong></h4><p>任务对比：</p>
 <p><img src="https://pic3.zhimg.com/80/v2-96160c6ccda823f78099bcce690ce7d2_720w.jpg" alt="img"></p>
 <p>action recognization task : classify a short trimmed video into a single action label</p>
@@ -247,7 +255,7 @@
 <p>我们用预先预定义的层次表示模式约束每个自注意层，迫使低层次自注意层首先关注局部关系，然后逐渐扩大它们的足迹，以捕获高层中更长的依赖关系。</p>
 <p>3.原始的decoder无法满足此任务的需求，无法优化初始的预测。priorwork都是在encoder后接一个额外的TCN（temporal convolution network）、GCN（graph-based temporal network)</p>
 <p>本文贡献总结：To summarize, the main contributions of this work include: 1) An exploration for Transformer on action segmentation task with three distinctive characteristics: the explicitly introduced local connectivity inductive bias, pre-defifined hierarchical representation pattern, and new design of the decoder; 2) state of-the-art action segmentation results on three public datasets.</p>
-<p><img src="C:\Users\ys\AppData\Roaming\Typora\typora-user-images\image-20211129155215256.png" alt="image-20211129155215256"></p>
+<p><img src="C:\hexo\source_posts\image\image-20211130185321867.png"></p>
 <h4 id="2-Related-Work"><a href="#2-Related-Work" class="headerlink" title="2.Related Work"></a>2.<strong>Related Work</strong></h4><h5 id="Action-Segmentation："><a href="#Action-Segmentation：" class="headerlink" title="Action Segmentation："></a><strong>Action Segmentation</strong>：</h5><p>早期采用滑窗方法、时序建模（CRF、HMM、RNN）  ——&gt;  classify framewise actions</p>
 <p>近期 temporal convolution及其变体   encoder-decoder temporal convolution , deformable temporal convolution，dilated temporal convolution…….</p>
 <p>However, a single convolutional layer does not connect all pairs of input and output positions, which remains room for improvement.</p>
@@ -319,7 +327,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://example.com/2022/08/23/ASformer%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" title="ASformer论文笔记">http://example.com/2022/08/23/ASformer论文笔记/</a>
+    <a href="http://example.com/2022/03/23/ASformer%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" title="ASformer论文笔记">http://example.com/2022/03/23/ASformer论文笔记/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -340,10 +348,13 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/08/23/%E5%8A%A8%E4%BD%9C%E6%A3%80%E6%B5%8B%E5%88%86%E5%89%B2%E2%80%94%E8%AF%84%E4%BC%B0%E6%8C%87%E6%A0%87%E8%AF%B4%E6%98%8E/" rel="prev" title="动作检测分割—评估指标说明">
-      <i class="fa fa-chevron-left"></i> 动作检测分割—评估指标说明
+    <a href="/2022/02/23/%E8%87%AA%E7%9B%91%E7%9D%A3%E9%A2%84%E8%AE%AD%E7%BB%83/" rel="prev" title="自监督预训练">
+      <i class="fa fa-chevron-left"></i> 自监督预训练
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2022/08/21/%E6%96%B0%E7%9A%84%E5%BC%80%E5%A7%8B/" rel="next" title="新的开始">
+      新的开始 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -418,7 +429,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -427,7 +438,7 @@
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">20</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
