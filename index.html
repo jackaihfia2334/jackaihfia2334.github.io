@@ -504,7 +504,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-08-23 00:57:35" itemprop="dateModified" datetime="2022-08-23T00:57:35+08:00">2022-08-23</time>
+                <time title="修改时间：2022-08-23 23:47:52" itemprop="dateModified" datetime="2022-08-23T23:47:52+08:00">2022-08-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -529,13 +529,14 @@
       
           <h3 id="自监督预训练"><a href="#自监督预训练" class="headerlink" title="自监督预训练"></a>自监督预训练</h3><p>1.1 Self-supervised Learning<br>在预训练阶段我们使用无标签的数据集 (unlabeled data)，因为有标签的数据集很贵，打标签得要多少人工劳力去标注，那成本是相当高的，太贵。相反，无标签的数据集网上随便到处爬，它便宜。在训练模型参数的时候，我们不追求把这个参数用带标签数据从初始化的一张白纸给一步训练到位，原因就是数据集太贵。于是 Self-Supervised Learning 就想先把参数从一张白纸训练到初步成型，再从初步成型训练到完全成型。注意这是2个阶段。这个训练到初步成型的东西，我们把它叫做 Visual Representation。预训练模型的时候，就是模型参数从一张白纸到初步成型的这个过程，还是用无标签数据集。等我把模型参数训练个八九不离十，这时候再根据你下游任务 (Downstream Tasks) 的不同去用带标签的数据集把参数训练到完全成型，那这时用的数据集量就不用太多了，因为参数经过了第1阶段就已经训练得差不多了。</p>
 <p>第一个阶段不涉及任何下游任务，就是拿着一堆无标签的数据去预训练，没有特定的任务，这个话用官方语言表达叫做：in a task-agnostic way。第二个阶段涉及下游任务，就是拿着一堆带标签的数据去在下游任务上 Fine-tune，这个话用官方语言表达叫做：in a task-specific way。</p>
-<p>以上这些话就是 Self-Supervised Learning 的核心思想，如下图1所示，后面还会再次提到它。</p>
-<p><img src="https://img-blog.csdnimg.cn/img_convert/500f387fc8f44fba0481140005109af5.png" alt="图1：Self-Supervised Learning 的核心思想"></p>
-<p>Self-Supervised Learning 不仅是在NLP领域，在CV, 语音领域也有很多经典的工作，如下图2所示。它可以分成3类：Data Centric, Prediction (也叫 Generative) 和 Contrastive。</p>
-<p><img src="https://img-blog.csdnimg.cn/img_convert/9db77d8f55425d9debd1a4d4f7acbac6.png" alt="图2：各个领域的 Self-Supervised Learning"></p>
-<p>其中的主流就是基于 Generative 的方法和基于 Contrative 的方法。如下图 3 所示这里简单介绍下。基于 Generative 的方法主要关注的重建误差，比如对于 NLP 任务而言，一个句子中间盖住一个 token，让模型去预测，令得到的预测结果与真实的 token 之间的误差作为损失。基于 Contrastive 的方法不要求模型能够重建原始输入，而是希望模型能够在特征空间上对不同的输入进行分辨。</p>
-<p><img src="https://img-blog.csdnimg.cn/img_convert/0f6759c96a9b8bb4b026c4d29abe5aec.png" alt="图3：基于 generative 的方法和基于 contrastive 的方法的总结图片"></p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/02/23/%E8%87%AA%E7%9B%91%E7%9D%A3%E9%A2%84%E8%AE%AD%E7%BB%83/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -585,7 +586,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-08-23 23:27:56" itemprop="dateModified" datetime="2022-08-23T23:27:56+08:00">2022-08-23</time>
+                <time title="修改时间：2022-08-23 23:47:15" itemprop="dateModified" datetime="2022-08-23T23:47:15+08:00">2022-08-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -610,31 +611,14 @@
       
           <h3 id="毕设baseline1代码结构和笔记"><a href="#毕设baseline1代码结构和笔记" class="headerlink" title="毕设baseline1代码结构和笔记"></a>毕设baseline1代码结构和笔记</h3><h4 id="1"><a href="#1" class="headerlink" title="1."></a>1.</h4><p>sub-sample-rate就是新的采样率 ，这里设置为2</p>
 <p>CrossTaskDataset中，已经将gt信息写入h5py文件中了</p>
-<h4 id="2"><a href="#2" class="headerlink" title="2."></a>2.</h4><p>破案了，在ProceL数据集中有segment的存在，因此有这个方法的应用</p>
-<p>attention_summarization中也有这样的操作，aggregated_features将同一片段不同帧的特征mean成一个  T-&gt;S</p>
-<p> # 现在的情况就是T&#x3D;S，没有真正意义上的segment的存在，因为提取的feature就是降采样后提取的，feature[1,T,49,521]中的T不是视频原本的帧数</p>
-<p>subsample-segment_list以及函数aggregated_keysteps 的作用不明确 </p>
-<p> 实验证明经过aggregated_keysteps处理后的key_step_lables和处理前的key_step-list是一致的</p>
-<p>函数定义如下</p>
-<p>def aggregated_keysteps(subsampled_segment_list, key_step_list):</p>
-<p>  “””</p>
-<p>  Function which aggregate the subsampled keysteps assigning the keystep which is found in majority for each segment</p>
-<p>  Parameters</p>
-<p>  -———</p>
-<p>  subsampled_segment_list: subsampled list of segments key_step_list: a list denoting the key step number each frame belongs to.</p>
-<p>  Returns</p>
-<p>  -——</p>
-<p>  batch_aggregated_key_list: list denoting which segment in the aggregated</p>
-<p>  feature belongs to which key step</p>
-<p>  “””-</p>
-<h4 id="3-模型中的数据流动"><a href="#3-模型中的数据流动" class="headerlink" title="3.模型中的数据流动"></a>3.模型中的数据流动</h4><h4 id="4-评估方式"><a href="#4-评估方式" class="headerlink" title="4.评估方式"></a>4.评估方式</h4><p> Mof（分为是否per-keystep())</p>
-<p>++++++++++++</p>
-<p>有应用内置的匈牙利算法实现linear_sum_assignment来实现分配</p>
-<p><img src="C:\hexo\source_posts\image\image-20211128205936133.png"></p>
-<h4 id="5-bug-and-warning"><a href="#5-bug-and-warning" class="headerlink" title="5 bug and warning"></a>5 bug and warning</h4><p>runtime error</p>
-<p>&#x2F;data&#x2F;yufan&#x2F;eccv20&#x2F;core&#x2F;FeatureVGGDataset_CrossTask.py:180: H5pyDeprecationWarning: dataset.value has been deprecated. Use dataset[()] instead.</p>
-<p>UserWarning: nn.functional.tanh is deprecated. Use torch.tanh instead.<br>  warnings.warn(“nn.functional.tanh is deprecated. Use torch.tanh instead.”)</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/11/21/Baseline1-note-code/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -684,7 +668,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-08-23 23:17:32" itemprop="dateModified" datetime="2022-08-23T23:17:32+08:00">2022-08-23</time>
+                <time title="修改时间：2022-08-23 23:47:38" itemprop="dateModified" datetime="2022-08-23T23:47:38+08:00">2022-08-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -713,133 +697,14 @@
       
           <h4 id="Python"><a href="#Python" class="headerlink" title="Python"></a>Python</h4><h5 id="1-functools-partial详解"><a href="#1-functools-partial详解" class="headerlink" title="1.functools partial详解"></a>1.functools partial详解</h5><p>首先从一个例子说起：</p>
 <p><img src="https://img-blog.csdn.net/20170804092530371" alt="img"></p>
-<p>首先我们定义了一个function add ，它接收两个参数a和b，返回a和b的和。然后我们使用partial ，第一个参数是fun ，即传入我们的函数add，然后 再传入一个参数 ，这里是 1 ，它返回给我们一个新的function （addOne）。我们发现这个新的function 只需要接受一个参数，然后返回这个参数与 1 的和。看起来其实相当于我们在使用add函数时固定了a的值为1（注意是从左到右固定参数的值，你可以自己定义一个减法测试）。那我们是不是 可以固定多个参数的，当然是可以的，看下面这个例子：<img src="https://img-blog.csdn.net/20170804093505666" alt="img"></p>
-<p>可以看出我们是可以固定多个参数的，如上面的addTwo函数相对于原函数add固定了a和b的值 。 </p>
-<p>有了初步的印象，接下来让我们来看看官方给出的定义：</p>
-<p><img src="https://img-blog.csdn.net/20170804093904291" alt="img"></p>
-<p>其中*args 和 <strong>keywords 表示参数不定的情况：*args表示任何多个无名参数,它是一个tuple；</strong>keywords表示关键字参数,它是一个dict。 看起来有些复杂，我们忽略**keywords，其实这个函数的功能类似于这样：</p>
-<p><img src="https://img-blog.csdn.net/20170804095647822" alt="img"></p>
-<p>我们使用print来打印参数以看下到底是个怎样的流程：</p>
-<p><img src="https://img-blog.csdn.net/20170804101518145" alt="img"></p>
-<p>实际上我们是固定了a的值为2，b的值为3，当传入4的时候相当于c的值为4。你可以把官方给出的partial函数copy到console，加上print来 查看更详细的过程。这里只简要举个类似的情况。</p>
-<p>举个粒子~~我们来瞧瞧为什么要使用它：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> random <span class="keyword">as</span> RND</span><br><span class="line">fnx = <span class="keyword">lambda</span>: RND.randint(<span class="number">0</span>, <span class="number">10</span>)</span><br><span class="line">data = [ (fnx(), fnx()) <span class="keyword">for</span> c <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>) ]</span><br><span class="line">target = (<span class="number">2</span>, <span class="number">4</span>)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">euclid_dist</span>(<span class="params">v1, v2</span>):</span><br><span class="line">    x1, y1 = v1</span><br><span class="line">    x2, y2 = v2</span><br><span class="line">    <span class="keyword">return</span> math.sqrt((x2 - x1)**<span class="number">2</span> + (y2 - y1)**<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
-
-<p>其中data中包含了一系列的点的坐标，我们想要计算这些点到target点的距离并且进行排序。<br>于是我们使用sort函数 ：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data.sort(key=euclid_dist)</span><br></pre></td></tr></table></figure>
-
-<p>但是报错如下：</p>
-<p><img src="https://img-blog.csdn.net/20170804103754439" alt="img"></p>
-<p>sort函数只接受这样一个函数——这个函数只有一个参数。<br>于是乎我们的partial就派上用场了：<img src="https://img-blog.csdn.net/20170804103924888" alt="img"></p>
-<h4 id="pandas"><a href="#pandas" class="headerlink" title="pandas"></a>pandas</h4><h5 id="1-df-iloc"><a href="#1-df-iloc" class="headerlink" title="1.df.iloc[]"></a>1.df.iloc[]</h5><p>iloc是基于整数型位置参数来进行检索，也可以是一个布尔值数组<br>允许的参数有：</p>
-<p>先构建一个实例<br>import pandas as pd<br>import matplotlib.pyplot as plt<br>df &#x3D; pd.DataFrame(index&#x3D;[‘小明’,’小红’,’小王’],data&#x3D;{‘height’:[178,171,185],’weight’:[156,90,140]})<br>df<br>        height	weight<br>小明	178		156<br>小红	171		90<br>小王	185		140<br>1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>一个整数<br>df.iloc[2] #如果只有一个参数，那么默认是行</p>
-<p>height    185<br>weight    140<br>Name: 小王, dtype: int64<br>1<br>2<br>3<br>4<br>5<br>一个数组<br>df.iloc[[0,2]]</p>
-<pre><code>height	weight
-</code></pre>
-<p>小明	178	156<br>小王	185	140<br>1<br>2<br>3<br>4<br>5<br>一个整数的切片<br>df.iloc[1:2]#依旧是左闭右开</p>
-<pre><code>height	weight
-</code></pre>
-<p>小红	171	90<br>1<br>2<br>3<br>4<br>一个布尔数组<br>df.iloc[[True,False,True]]#数组长度要和数据集长度匹配</p>
-<pre><code>height	weight
-</code></pre>
-<p>小明	178	156<br>小王	185	140<br>1<br>2<br>3<br>4<br>5<br>函数<br>df.iloc[lambda x: x.index &#x3D;&#x3D; ‘小王’]</p>
-<pre><code>height	weight
-</code></pre>
-<p>小王	185	140</p>
-<h4 id="Pytorch"><a href="#Pytorch" class="headerlink" title="Pytorch"></a>Pytorch</h4><h5 id="nn-LayerNorm"><a href="#nn-LayerNorm" class="headerlink" title="nn.LayerNorm"></a>nn.LayerNorm</h5><p>LayerNorm参数<br>torch.nn.LayerNorm(<br>        normalized_shape: Union[int, List[int], torch.Size],<br>        eps: float &#x3D; 1e-05,<br>        elementwise_affine: bool &#x3D; True)<br>normalized_shape<br>如果传入整数，比如4，则被看做只有一个整数的list，此时LayerNorm会对输入的最后一维进行归一化，这个int值需要和输入的最后一维一样大。</p>
-<p>假设此时输入的数据维度是[3, 4]，则对3个长度为4的向量求均值方差，得到3个均值和3个方差，分别对这3行进行归一化（每一行的4个数字都是均值为0，方差为1）；LayerNorm中的weight和bias也分别包含4个数字，重复使用3次，对每一行进行仿射变换（仿射变换即乘以weight中对应的数字后，然后加bias中对应的数字），并会在反向传播时得到学习。<br>如果输入的是个list或者torch.Size，比如[3, 4]或torch.Size([3, 4])，则会对网络最后的两维进行归一化，且要求输入数据的最后两维尺寸也是[3, 4]。</p>
-<p>假设此时输入的数据维度也是[3, 4]，首先对这12个数字求均值和方差，然后归一化这个12个数字；weight和bias也分别包含12个数字，分别对12个归一化后的数字进行仿射变换（仿射变换即乘以weight中对应的数字后，然后加bias中对应的数字），并会在反向传播时得到学习。<br>假设此时输入的数据维度是[N, 3, 4]，则对着N个[3,4]做和上述一样的操作，只是此时做仿射变换时，weight和bias被重复用了N次。<br>假设此时输入的数据维度是[N, T, 3, 4]，也是一样的，维度可以更多。<br>注意：显然LayerNorm中weight和bias的shape就是传入的normalized_shape。</p>
-<p>eps<br>归一化时加在分母上防止除零。</p>
-<p>elementwise_affine<br>如果设为False，则LayerNorm层不含有任何可学习参数。</p>
-<p>如果设为True（默认是True）则会包含可学习参数weight和bias，用于仿射变换，即对输入数据归一化到均值0方差1后，乘以weight，即bias。</p>
-<h5 id="torch-roll"><a href="#torch-roll" class="headerlink" title="torch.roll"></a>torch.roll</h5><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># swin transformer中移位的操作</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">CyclicShift</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params"><span class="variable language_">self</span>, displacement</span>):</span><br><span class="line">        <span class="variable language_">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.displacement = displacement</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params"><span class="variable language_">self</span>, x</span>):</span><br><span class="line">        <span class="keyword">return</span> torch.roll(x, shifts=(<span class="variable language_">self</span>.displacement, <span class="variable language_">self</span>.displacement), dims=(<span class="number">1</span>, <span class="number">2</span>))</span><br></pre></td></tr></table></figure>
-
-<p>torch.roll(input, shifts, dims&#x3D;None) 这个函数到底是干啥的，咋用的呢？<br> 简单说，它就是用来移位的，是顺移。input是咱们要移动的tensor向量，shifts是要移动到的位置，要移动去哪儿，<strong>dims是在什么维度去移动(这里的dim跟一般操作有所不同，以二维张量为例，dim0表示行，dim1表示列）</strong>如2维的数据，那就两个方向，横着或者竖着。对了，关键的一句话，所有操作针对第一行或者第一列，主要是这个”第一”，下面举例子给大家做解释，自己慢慢体会</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; x = torch.tensor([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]).view(<span class="number">3</span>, <span class="number">3</span>)</span><br><span class="line">&gt;&gt;&gt; x</span><br><span class="line">tensor([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]])</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; torch.roll(x, <span class="number">1</span>, <span class="number">0</span>)</span><br><span class="line">tensor([[<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>],</span><br><span class="line">        [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>]])</span><br></pre></td></tr></table></figure>
-
-<p>torch.roll(x, 1, 0) 这行代码的意思就是把x的第一行(0维度)移到1这个位置上，其他位置的数据顺移。<br> x——咱们要移动的向量<br> 1——第一行向量要移动到的最终位置<br> 0——从行的角度去移动</p>
-<p>再来一个列的例子</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; x = torch.tensor([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]).view(<span class="number">3</span>, <span class="number">3</span>)</span><br><span class="line">&gt;&gt;&gt; x</span><br><span class="line">tensor([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]])</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; torch.roll(x, -<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">&gt;&gt;&gt; x</span><br><span class="line">tensor([[<span class="number">2</span>, <span class="number">3</span>, <span class="number">1</span>],</span><br><span class="line">        [<span class="number">5</span>, <span class="number">6</span>, <span class="number">4</span>],</span><br><span class="line">        [<span class="number">8</span>, <span class="number">9</span>, <span class="number">7</span>]])</span><br></pre></td></tr></table></figure>
-
-<p>torch.roll(x, -1, 1) 这行代码的意思就是把x的第一列(1维度)移到-1这个位置(最后一个位置)上，其他位置的数据顺移。</p>
-<p>shifts和dims可以是元组，其实就是分步骤去移动，再举个例子</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; x = torch.tensor([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]).view(<span class="number">3</span>, <span class="number">3</span>)</span><br><span class="line">&gt;&gt;&gt; x</span><br><span class="line">tensor([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]])</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; torch.roll(x, (<span class="number">0</span>,<span class="number">1</span>), (<span class="number">1</span>,<span class="number">1</span>))</span><br><span class="line">tensor([[<span class="number">3</span>, <span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="number">6</span>, <span class="number">4</span>, <span class="number">5</span>],</span><br><span class="line">        [<span class="number">9</span>, <span class="number">7</span>, <span class="number">8</span>]])</span><br></pre></td></tr></table></figure>
-
-<p>torch.roll(x, (0,1), (1,1)) 这行代码的意思：<br> 第一步，把x的第一列(1维度)移到0这个位置(原地不动)上，其他位置的数据顺移。(所有数据原地不动)</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; x = torch.tensor([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]).view(<span class="number">3</span>, <span class="number">3</span>)</span><br><span class="line">&gt;&gt;&gt; x</span><br><span class="line">tensor([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]])</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; a = torch.roll(x, <span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">&gt;&gt;&gt; a</span><br><span class="line">tensor([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]])</span><br></pre></td></tr></table></figure>
-
-<p>第二步，把a的第一列(1维度)移到1这个位置上，其他位置的数据顺移。</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; a = torch.roll(x, <span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">&gt;&gt;&gt; a</span><br><span class="line">tensor([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]])</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; b = torch.roll(a, <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">&gt;&gt;&gt; b</span><br><span class="line">tensor([[<span class="number">3</span>, <span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="number">6</span>, <span class="number">4</span>, <span class="number">5</span>],</span><br><span class="line">        [<span class="number">9</span>, <span class="number">7</span>, <span class="number">8</span>]])</span><br></pre></td></tr></table></figure>
-
-
-
-<h5 id="permute函数"><a href="#permute函数" class="headerlink" title="permute函数"></a>permute函数</h5><h5 id="contiguous函数"><a href="#contiguous函数" class="headerlink" title="contiguous函数"></a>contiguous函数</h5><p><strong>1 先看看官方中英文doc：</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">torch.Tensor.contiguous (Python method, in torch.Tensor)</span><br><span class="line">torch.Tensor.is_contiguous (Python method, in torch.Tensor)</span><br></pre></td></tr></table></figure>
-
-<p><strong>1.1 contiguous() → Tensor</strong></p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Returns a contiguous tensor containing the same data as self tensor. If self tensor is contiguous, this function returns the self tensor.</span><br></pre></td></tr></table></figure>
-
-<p><strong>1.2 contiguous() → Tensor</strong></p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">返回一个内存连续的有相同数据的tensor，如果原tensor内存连续，则返回原tensor；</span><br></pre></td></tr></table></figure>
-
-<p><strong>2 <a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=pytorch+contiguous&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra=%7B%22sourceType%22:%22article%22,%22sourceId%22:64376950%7D">pytorch contiguous</a>的使用</strong></p>
-<p>contiguous一般与transpose，permute，view搭配使用：使用transpose或permute进行维度变换后，调用contiguous，然后方可使用view对维度进行变形（如：tensor_var.contiguous().view() ），示例如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">x = torch.Tensor(2,3)</span><br><span class="line">y = x.permute(1,0)         # permute：二维tensor的维度变换，此处功能相当于转置transpose</span><br><span class="line">y.view(-1)                 # 报错，view使用前需调用contiguous()函数</span><br><span class="line">y = x.permute(1,0).contiguous()</span><br><span class="line">y.view(-1)                 # OK</span><br></pre></td></tr></table></figure>
-
-<p>具体原因有两种说法：</p>
-<p>1 transpose、permute等维度变换操作后，tensor在内存中不再是连续存储的，而view操作要求tensor的内存连续存储，所以需要contiguous来返回一个contiguous copy；</p>
-<p>2 维度变换后的变量是之前变量的浅拷贝，指向同一区域，即view操作会连带原来的变量一同变形，这是不合法的，所以也会报错；—- 这个解释有部分道理，也即contiguous返回了tensor的深拷贝contiguous copy数据；</p>
-<p>3 contiguous函数分析，参考CSDN博客</p>
-<p>在pytorch中，只有很少几个操作是不改变tensor的内容本身，而只是重新定义下标与元素的对应关系。换句话说，这种操作不进行数据拷贝和数据的改变，变的是元数据，这些操作是：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">narrow()，view()，expand()，transpose()；</span><br></pre></td></tr></table></figure>
-
-<p>举个栗子，在使用transpose()进行转置操作时，pytorch并不会创建新的、转置后的tensor，而是修改了tensor中的一些属性（也就是元数据），使得此时的offset和stride是与转置tensor相对应的，而转置的tensor和原tensor的内存是共享的！</p>
-<p>为了证明这一点，我们来看下面的代码：****</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x = torch.randn(3, 2)</span><br><span class="line">y = x.transpose(x, 0, 1)</span><br><span class="line">x[0, 0] = 233</span><br><span class="line">print(y[0, 0])       # print 233</span><br></pre></td></tr></table></figure>
-
-<p>可以看到，改变了x的元素的值的同时，y的元素的值也发生了变化；也即，经过上述操作后得到的tensor，它内部数据的布局方式和从头开始创建一个常规的tensor的布局方式是不一样的！于是就有contiguous()的用武之地了。</p>
-<p>在上面的例子中，x是contiguous的，但y不是（因为内部数据不是通常的布局方式）。注意：不要被contiguous的字面意思“连续的”误解，tensor中数据还是在内存中一块区域里，只是布局的问题！</p>
-<p>*当调用contiguous()时，会强制拷贝一份tensor，让它的布局和从头创建的一模一样；*</p>
-<p>一般来说这一点不用太担心，如果你没在需要调用contiguous()的地方调用contiguous()，运行时会提示你：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RuntimeError: input is not contiguous</span><br></pre></td></tr></table></figure>
-
-<p>只要看到这个错误提示，加上contiguous()就好啦～</p>
-<h5 id="flatten-参数详解"><a href="#flatten-参数详解" class="headerlink" title="flatten()参数详解"></a>flatten()参数详解</h5><p>flatten()是对多维数据的降维函数。<br>flatten(),默认缺省参数为0，也就是说flatten()和flatte(0)效果一样。<br>python里的flatten(dim)表示，从第dim个维度开始展开，将后面的维度转化为一维.也就是说，只保留dim之前的维度，其他维度的数据全都挤在dim这一维。<br>比如一个数据的维度是( S 0 , S 1 , S 2……… , S n ) (S0,S1,S2………,Sn)(S0,S1,S2………,Sn), flatten(m)后的数据为( S 0 ， S 1 ， S 2 ， . . . ， S m − 2 ， S m − 1 ， S m ∗ S m + 1 ∗ S m + 2 ∗ . . . ∗ S n ) (S0，S1，S2，…，Sm-2，Sm-1，Sm<em>Sm+1</em>Sm+2*…*Sn)(S0，S1，S2，…，Sm−2，Sm−1，Sm∗Sm+1∗Sm+2∗…∗Sn)</p>
-<p> nn.AdaptiveAvgPool1d &amp; nn.AdaptiveAvgPool2d</p>
-<p>eg1 </p>
-<p><code>m = nn.AdaptiveAvgPool1d(1)</code></p>
-<p><code>input = torch.randn(12, 64, 8)</code></p>
-<p><code>output = m(input)</code></p>
-<p><code>print(output.shape())</code></p>
-<p>输出(12，64，1）</p>
-<p>eg2</p>
-<p><code>m = nn.AdaptiveAvgPool2d((5,6))</code></p>
-<p><code>input = torch.randn(12, 64, 8)</code></p>
-<p><code>output = m(input)</code></p>
-<p><code>print(output.shape())</code></p>
-<p>输出(12，5，6）</p>
-<h4 id="Conv1d-amp-Conv2d"><a href="#Conv1d-amp-Conv2d" class="headerlink" title="Conv1d&amp;Conv2d"></a>Conv1d&amp;Conv2d</h4><p>输入数据格式如下：</p>
-<p><img src="https://img2018.cnblogs.com/blog/1498369/201905/1498369-20190504202338298-1508304575.png" alt="img"></p>
-<p>Conv1d类比，输入数据格式是（Batch_szie, Channel, Length of text）</p>
-<p>class torch.nn.Conv1d(in_channels, out_channels, kernel_size, stride&#x3D;1, padding&#x3D;0, dilation&#x3D;1, groups&#x3D;1, bias&#x3D;True)</p>
-<p>in_channels(int) – 输入信号的通道。在文本分类中，即为词向量的维度<br>out_channels(int) – 卷积产生的通道。有多少个out_channels，就需要多少个1维卷积<br>kernel_size(int or tuple) - 卷积核的尺寸，卷积核的大小为(k,)，第二个维度是由in_channels来决定的，所以实际上卷积大小为kernel_size*in_channels<br>stride(int or tuple, optional) - 卷积步长<br>padding (int or tuple, optional)- 输入的每一条边补充0的层数<br>dilation(int or tuple, &#96;optional&#96;&#96;) – 卷积核元素之间的间距<br>groups(int, optional) – 从输入通道到输出通道的阻塞连接数<br>bias(bool, optional) - 如果bias&#x3D;True，添加偏置<br>举个例子:</p>
-<p>conv1 &#x3D; nn.Conv1d(in_channels&#x3D;256，out_channels&#x3D;100,kernel_size&#x3D;2)<br>input &#x3D; torch.randn(32,35,256)</p>
-<p>batch_size x text_len x embedding_size -&gt; batch_size x embedding_size x text_len</p>
-<p>input &#x3D; input.permute(0,2,1)<br>out &#x3D; conv1(input)<br>print(out.size())<br>这里32为batch_size，35为句子最大长度，256为词向量</p>
-<p>再输入一维卷积的时候，需要将32<em>35</em>256变换为32<em>256</em>35，因为一维卷积是在最后维度上扫的，最后out的大小即为：32 <em>100</em>（35-2+1）&#x3D;32 <em>100</em> 34</p>
-<h4 id="Pytorch中transpose与numpy中transpose的异同"><a href="#Pytorch中transpose与numpy中transpose的异同" class="headerlink" title="Pytorch中transpose与numpy中transpose的异同"></a>Pytorch中transpose与numpy中transpose的异同</h4><p>相同点，都用于作不同维度间的转换，且都是深拷贝，不影响原来的</p>
-<h3 id="张量乘法"><a href="#张量乘法" class="headerlink" title="张量乘法"></a>张量乘法</h3><p>  1.torch.bmm </p>
-<p><strong>函数作用</strong><br>计算两个tensor的矩阵乘法，torch.bmm(a,b),tensor a 的size为(b,h,w),tensor b的size为(b,w,h),注意两个tensor的维度必须为3</p>
-<ol start="2">
-<li>torch.matmul</li>
-</ol>
-<p><img src="https://img-blog.csdnimg.cn/2020042710180343.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FzbXg2NjY=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><img src="https://img-blog.csdnimg.cn/20200427102557964.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FzbXg2NjY=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
-<h4 id="PyTorch实现MLP的两种方法，以及nn-Conv1d-kernel-size-x3D-1和nn-Linear的区别"><a href="#PyTorch实现MLP的两种方法，以及nn-Conv1d-kernel-size-x3D-1和nn-Linear的区别" class="headerlink" title="PyTorch实现MLP的两种方法，以及nn.Conv1d, kernel_size&#x3D;1和nn.Linear的区别"></a>PyTorch实现MLP的两种方法，以及nn.Conv1d, kernel_size&#x3D;1和nn.Linear的区别</h4><p>两者可以实现同样结构的MLP计算，但计算形式不同，具体为：</p>
-<p>nn.Conv1d输入的是一个[batch, channel, length]，3维tensor，</p>
-<p>而nn.Linear输入的是一个[batch, *,in_features]，可变形状tensor，在进行等价计算时务必保证nn.Linear输入tensor为三维</p>
-<p>nn.Conv1d作用在第二个维度位置channel，nn.Linear作用在第三个维度位置in_features，对于一个X，若要在两者之间进行等价计算，需要进行tensor.permute，重新排列维度轴秩序</p>
-<p>详见博客：<a target="_blank" rel="noopener" href="https://blog.csdn.net/l1076604169/article/details/107170146">https://blog.csdn.net/l1076604169/article/details/107170146</a></p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/11/12/%E4%BB%A3%E7%A0%81%E7%BB%86%E8%8A%82%E9%9A%8F%E6%9C%BA/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -972,7 +837,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-08-23 23:23:36" itemprop="dateModified" datetime="2022-08-23T23:23:36+08:00">2022-08-23</time>
+                <time title="修改时间：2022-08-23 23:47:27" itemprop="dateModified" datetime="2022-08-23T23:47:27+08:00">2022-08-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -997,36 +862,14 @@
       
           <p>毕设论文笔记1</p>
 <h3 id="一：解决什么问题"><a href="#一：解决什么问题" class="headerlink" title="一：解决什么问题"></a>一：解决什么问题</h3><p>procedure learning  （instructionial  video)</p>
-<h3 id="二：prior-work"><a href="#二：prior-work" class="headerlink" title="二：prior work"></a>二：prior work</h3><p>1.强监督的，视频有关键步骤的精确标注（精确到起止时间、帧） </p>
-<pre><code> goal:分割新的视频或预测未来的关键步骤
-</code></pre>
-<p>2.弱监督，每个视频给一个关键步骤的list，同时在视频中的每个关键步骤中只标记一帧，从而降低了注释成本，但仍需要人工标注</p>
-<p>​	goal:</p>
-<p>3.无监督的，利用同一任务的视频结构，以发现和定位视频中的关键步骤 </p>
-<p>​	goal:定位视频中的关键步骤，并学习每个关键步骤的模型</p>
-<p>​	ps:从视频中的叙述或文本中学习  数据需要人工清理  声音与画面不同步，可能在片头说了所有步骤</p>
-<p>现有工作逐渐集中于无监督，仅仅使用视频画面数据  </p>
-<p> using a Mallows model [27], joint dynamic summarization [9] or clustering and ordering of visual features </p>
-<p>不足之处：</p>
-<p>1.集中于单一任务，不同任务需要单独运行（切换），给定一个新任务，无法自动分类。</p>
-<p>2.无监督学习涉及许多非凸-优化问题，仍具有挑战性和研究意义</p>
-<p>3.大多数现有的无监督过程学习工作都缺乏学习关键步骤发现的信息特征的能力，通常依赖于预先计算的特征。最近的作品集中于联合使用叙述和视觉数据来学习特征，但它们需要访问叙述，并依赖于模式之间的弱对齐。</p>
-<h3 id="三：特点（不同于以往）"><a href="#三：特点（不同于以往）" class="headerlink" title="三：特点（不同于以往）"></a>三：特点（不同于以往）</h3><p>无监督的 （没有关键步骤的语言描述、注解；更没有精确到帧、起止时间的标注）subset selection module 作老师 自监督</p>
-<p>仅仅使用视频数据本身(没有用到其他，例如声音，字幕等)</p>
-<p>多任务的，且用监督学习方法来对新任务进行任务分类（多分类问题）</p>
-<p><strong>目标是分类测试视频的任务标签和定位其关键步骤</strong></p>
-<h3 id="四：网络结构"><a href="#四：网络结构" class="headerlink" title="四：网络结构"></a>四：网络结构</h3><p>k均值聚类是用EM算法解决的，本身不能反向传播</p>
-<p>在纸质论文中分析网络结构的具体内容  结合代码和实验掌握细节设计</p>
-<h3 id="五-实验设计"><a href="#五-实验设计" class="headerlink" title="五:实验设计"></a>五:实验设计</h3><p>ss-model是否存在问题？  缺乏时序排列，缺乏匈牙利算法的分配？   查看参考论文【7-9】【31】</p>
-<p>评估函数（四个）  有无bg，是否align(后两种没有用到过)</p>
-<h3 id="六-实验结果与分析"><a href="#六-实验结果与分析" class="headerlink" title="六:实验结果与分析"></a>六:实验结果与分析</h3><h3 id="other"><a href="#other" class="headerlink" title="other:"></a>other:</h3><p><strong>什么是Embedding？</strong></p>
-<p>Embedding（嵌入）是拓扑学里面的词，在深度学习领域经常和Manifold（流形）搭配使用。</p>
-<p>可以用几个例子来说明，比如三维空间的球体是一个二维流形嵌入在三维空间（2D manifold embedded in 3D space）。之所以说他是一个二维流形，是因为球上的任意一个点只需要用一个二维的经纬度来表达就可以了。</p>
-<p>又比如一个二维空间的旋转矩阵是2x2的矩阵，其实只需要一个角度就能表达了，这就是一个一维流形嵌入在2x2的矩阵空间。</p>
-<p><strong>什么是深度学习里的Embedding？</strong></p>
-<p>这个概念在深度学习领域最原初的切入点是所谓的<strong>Manifold Hypothesis</strong>（流形假设）。流形假设是指“自然的原始数据是低维的流形嵌入于(embedded in)原始数据所在的高维空间”。那么，深度学习的任务就是把高维原始数据（图像，句子）映射到低维流形，使得高维的原始数据被映射到低维流形之后变得可分，而这个映射就叫嵌入（Embedding）。比如Word Embedding，就是把单词组成的句子映射到一个表征向量。但后来不知咋回事，开始把低维流形的表征向量叫做Embedding，其实是一种误用。。。</p>
-<p>如果按照现在深度学习界通用的理解（其实是偏离了原意的），Embedding就是从原始数据提取出来的Feature，也就是那个通过神经网络映射之后的低维向量。</p>
-<h4 id=""><a href="#" class="headerlink" title=""></a></h4>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/08/23/%E6%AF%95%E8%AE%BEbaseline1-paper/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
