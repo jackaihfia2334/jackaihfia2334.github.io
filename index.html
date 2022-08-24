@@ -161,6 +161,166 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/25/Pytorch%E9%9A%8F%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/yj.png">
+      <meta itemprop="name" content="MYF">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MYF  ZJU-ISEE">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/08/25/Pytorch%E9%9A%8F%E8%AE%B0/" class="post-title-link" itemprop="url">Pytorch随记</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-08-25 00:56:46 / 修改时间：00:59:08" itemprop="dateCreated datePublished" datetime="2022-08-25T00:56:46+08:00">2022-08-25</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Pytorch/" itemprop="url" rel="index"><span itemprop="name">Pytorch</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="Pytorch"><a href="#Pytorch" class="headerlink" title="Pytorch"></a>Pytorch</h4><h5 id="nn-LayerNorm"><a href="#nn-LayerNorm" class="headerlink" title="nn.LayerNorm"></a>nn.LayerNorm</h5><p>LayerNorm参数<br>torch.nn.LayerNorm(<br>        normalized_shape: Union[int, List[int], torch.Size],<br>        eps: float &#x3D; 1e-05,<br>        elementwise_affine: bool &#x3D; True)<br>normalized_shape<br>如果传入整数，比如4，则被看做只有一个整数的list，此时LayerNorm会对输入的最后一维进行归一化，这个int值需要和输入的最后一维一样大。</p>
+<p>假设此时输入的数据维度是[3, 4]，则对3个长度为4的向量求均值方差，得到3个均值和3个方差，分别对这3行进行归一化（每一行的4个数字都是均值为0，方差为1）；LayerNorm中的weight和bias也分别包含4个数字，重复使用3次，对每一行进行仿射变换（仿射变换即乘以weight中对应的数字后，然后加bias中对应的数字），并会在反向传播时得到学习。<br>如果输入的是个list或者torch.Size，比如[3, 4]或torch.Size([3, 4])，则会对网络最后的两维进行归一化，且要求输入数据的最后两维尺寸也是[3, 4]。</p>
+<p>假设此时输入的数据维度也是[3, 4]，首先对这12个数字求均值和方差，然后归一化这个12个数字；weight和bias也分别包含12个数字，分别对12个归一化后的数字进行仿射变换（仿射变换即乘以weight中对应的数字后，然后加bias中对应的数字），并会在反向传播时得到学习。<br>假设此时输入的数据维度是[N, 3, 4]，则对着N个[3,4]做和上述一样的操作，只是此时做仿射变换时，weight和bias被重复用了N次。<br>假设此时输入的数据维度是[N, T, 3, 4]，也是一样的，维度可以更多。<br>注意：显然LayerNorm中weight和bias的shape就是传入的normalized_shape。</p>
+<p>eps<br>归一化时加在分母上防止除零。</p>
+<p>elementwise_affine<br>如果设为False，则LayerNorm层不含有任何可学习参数。</p>
+<p>如果设为True（默认是True）则会包含可学习参数weight和bias，用于仿射变换，即对输入数据归一化到均值0方差1后，乘以weight，即bias。</p>
+<h5 id="torch-roll"><a href="#torch-roll" class="headerlink" title="torch.roll"></a>torch.roll</h5><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># swin transformer中移位的操作</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">CyclicShift</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params"><span class="variable language_">self</span>, displacement</span>):</span><br><span class="line">        <span class="variable language_">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.displacement = displacement</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params"><span class="variable language_">self</span>, x</span>):</span><br><span class="line">        <span class="keyword">return</span> torch.roll(x, shifts=(<span class="variable language_">self</span>.displacement, <span class="variable language_">self</span>.displacement), dims=(<span class="number">1</span>, <span class="number">2</span>))</span><br></pre></td></tr></table></figure>
+
+<p>torch.roll(input, shifts, dims&#x3D;None) 这个函数到底是干啥的，咋用的呢？<br> 简单说，它就是用来移位的，是顺移。input是咱们要移动的tensor向量，shifts是要移动到的位置，要移动去哪儿，<strong>dims是在什么维度去移动(这里的dim跟一般操作有所不同，以二维张量为例，dim0表示行，dim1表示列）</strong>如2维的数据，那就两个方向，横着或者竖着。对了，关键的一句话，所有操作针对第一行或者第一列，主要是这个”第一”，下面举例子给大家做解释，自己慢慢体会</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; x = torch.tensor([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]).view(<span class="number">3</span>, <span class="number">3</span>)</span><br><span class="line">&gt;&gt;&gt; x</span><br><span class="line">tensor([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]])</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; torch.roll(x, <span class="number">1</span>, <span class="number">0</span>)</span><br><span class="line">tensor([[<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>],</span><br><span class="line">        [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>]])</span><br></pre></td></tr></table></figure>
+
+<p>torch.roll(x, 1, 0) 这行代码的意思就是把x的第一行(0维度)移到1这个位置上，其他位置的数据顺移。<br> x——咱们要移动的向量<br> 1——第一行向量要移动到的最终位置<br> 0——从行的角度去移动</p>
+<p>再来一个列的例子</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; x = torch.tensor([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]).view(<span class="number">3</span>, <span class="number">3</span>)</span><br><span class="line">&gt;&gt;&gt; x</span><br><span class="line">tensor([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]])</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; torch.roll(x, -<span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">&gt;&gt;&gt; x</span><br><span class="line">tensor([[<span class="number">2</span>, <span class="number">3</span>, <span class="number">1</span>],</span><br><span class="line">        [<span class="number">5</span>, <span class="number">6</span>, <span class="number">4</span>],</span><br><span class="line">        [<span class="number">8</span>, <span class="number">9</span>, <span class="number">7</span>]])</span><br></pre></td></tr></table></figure>
+
+<p>torch.roll(x, -1, 1) 这行代码的意思就是把x的第一列(1维度)移到-1这个位置(最后一个位置)上，其他位置的数据顺移。</p>
+<p>shifts和dims可以是元组，其实就是分步骤去移动，再举个例子</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; x = torch.tensor([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]).view(<span class="number">3</span>, <span class="number">3</span>)</span><br><span class="line">&gt;&gt;&gt; x</span><br><span class="line">tensor([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]])</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; torch.roll(x, (<span class="number">0</span>,<span class="number">1</span>), (<span class="number">1</span>,<span class="number">1</span>))</span><br><span class="line">tensor([[<span class="number">3</span>, <span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="number">6</span>, <span class="number">4</span>, <span class="number">5</span>],</span><br><span class="line">        [<span class="number">9</span>, <span class="number">7</span>, <span class="number">8</span>]])</span><br></pre></td></tr></table></figure>
+
+<p>torch.roll(x, (0,1), (1,1)) 这行代码的意思：<br> 第一步，把x的第一列(1维度)移到0这个位置(原地不动)上，其他位置的数据顺移。(所有数据原地不动)</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; x = torch.tensor([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]).view(<span class="number">3</span>, <span class="number">3</span>)</span><br><span class="line">&gt;&gt;&gt; x</span><br><span class="line">tensor([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]])</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; a = torch.roll(x, <span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">&gt;&gt;&gt; a</span><br><span class="line">tensor([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]])</span><br></pre></td></tr></table></figure>
+
+<p>第二步，把a的第一列(1维度)移到1这个位置上，其他位置的数据顺移。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; a = torch.roll(x, <span class="number">0</span>, <span class="number">1</span>)</span><br><span class="line">&gt;&gt;&gt; a</span><br><span class="line">tensor([[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>],</span><br><span class="line">        [<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]])</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt; b = torch.roll(a, <span class="number">1</span>, <span class="number">1</span>)</span><br><span class="line">&gt;&gt;&gt; b</span><br><span class="line">tensor([[<span class="number">3</span>, <span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">        [<span class="number">6</span>, <span class="number">4</span>, <span class="number">5</span>],</span><br><span class="line">        [<span class="number">9</span>, <span class="number">7</span>, <span class="number">8</span>]])</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="permute函数"><a href="#permute函数" class="headerlink" title="permute函数"></a>permute函数</h5><h5 id="contiguous函数"><a href="#contiguous函数" class="headerlink" title="contiguous函数"></a>contiguous函数</h5><p><strong>1 先看看官方中英文doc：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">torch.Tensor.contiguous (Python method, in torch.Tensor)</span><br><span class="line">torch.Tensor.is_contiguous (Python method, in torch.Tensor)</span><br></pre></td></tr></table></figure>
+
+<p><strong>1.1 contiguous() → Tensor</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Returns a contiguous tensor containing the same data as self tensor. If self tensor is contiguous, this function returns the self tensor.</span><br></pre></td></tr></table></figure>
+
+<p><strong>1.2 contiguous() → Tensor</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">返回一个内存连续的有相同数据的tensor，如果原tensor内存连续，则返回原tensor；</span><br></pre></td></tr></table></figure>
+
+<p><strong>2 <a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=pytorch+contiguous&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra=%7B%22sourceType%22:%22article%22,%22sourceId%22:64376950%7D">pytorch contiguous</a>的使用</strong></p>
+<p>contiguous一般与transpose，permute，view搭配使用：使用transpose或permute进行维度变换后，调用contiguous，然后方可使用view对维度进行变形（如：tensor_var.contiguous().view() ），示例如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">x = torch.Tensor(2,3)</span><br><span class="line">y = x.permute(1,0)         # permute：二维tensor的维度变换，此处功能相当于转置transpose</span><br><span class="line">y.view(-1)                 # 报错，view使用前需调用contiguous()函数</span><br><span class="line">y = x.permute(1,0).contiguous()</span><br><span class="line">y.view(-1)                 # OK</span><br></pre></td></tr></table></figure>
+
+<p>具体原因有两种说法：</p>
+<p>1 transpose、permute等维度变换操作后，tensor在内存中不再是连续存储的，而view操作要求tensor的内存连续存储，所以需要contiguous来返回一个contiguous copy；</p>
+<p>2 维度变换后的变量是之前变量的浅拷贝，指向同一区域，即view操作会连带原来的变量一同变形，这是不合法的，所以也会报错；—- 这个解释有部分道理，也即contiguous返回了tensor的深拷贝contiguous copy数据；</p>
+<p>3 contiguous函数分析，参考CSDN博客</p>
+<p>在pytorch中，只有很少几个操作是不改变tensor的内容本身，而只是重新定义下标与元素的对应关系。换句话说，这种操作不进行数据拷贝和数据的改变，变的是元数据，这些操作是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">narrow()，view()，expand()，transpose()；</span><br></pre></td></tr></table></figure>
+
+<p>举个栗子，在使用transpose()进行转置操作时，pytorch并不会创建新的、转置后的tensor，而是修改了tensor中的一些属性（也就是元数据），使得此时的offset和stride是与转置tensor相对应的，而转置的tensor和原tensor的内存是共享的！</p>
+<p>为了证明这一点，我们来看下面的代码：****</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x = torch.randn(3, 2)</span><br><span class="line">y = x.transpose(x, 0, 1)</span><br><span class="line">x[0, 0] = 233</span><br><span class="line">print(y[0, 0])       # print 233</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，改变了x的元素的值的同时，y的元素的值也发生了变化；也即，经过上述操作后得到的tensor，它内部数据的布局方式和从头开始创建一个常规的tensor的布局方式是不一样的！于是就有contiguous()的用武之地了。</p>
+<p>在上面的例子中，x是contiguous的，但y不是（因为内部数据不是通常的布局方式）。注意：不要被contiguous的字面意思“连续的”误解，tensor中数据还是在内存中一块区域里，只是布局的问题！</p>
+<p>*当调用contiguous()时，会强制拷贝一份tensor，让它的布局和从头创建的一模一样；*</p>
+<p>一般来说这一点不用太担心，如果你没在需要调用contiguous()的地方调用contiguous()，运行时会提示你：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RuntimeError: input is not contiguous</span><br></pre></td></tr></table></figure>
+
+<p>只要看到这个错误提示，加上contiguous()就好啦～</p>
+<h5 id="flatten-参数详解"><a href="#flatten-参数详解" class="headerlink" title="flatten()参数详解"></a>flatten()参数详解</h5><p>flatten()是对多维数据的降维函数。<br>flatten(),默认缺省参数为0，也就是说flatten()和flatte(0)效果一样。<br>python里的flatten(dim)表示，从第dim个维度开始展开，将后面的维度转化为一维.也就是说，只保留dim之前的维度，其他维度的数据全都挤在dim这一维。<br>比如一个数据的维度是( S 0 , S 1 , S 2……… , S n ) (S0,S1,S2………,Sn)(S0,S1,S2………,Sn), flatten(m)后的数据为( S 0 ， S 1 ， S 2 ， . . . ， S m − 2 ， S m − 1 ， S m ∗ S m + 1 ∗ S m + 2 ∗ . . . ∗ S n ) (S0，S1，S2，…，Sm-2，Sm-1，Sm<em>Sm+1</em>Sm+2*…*Sn)(S0，S1，S2，…，Sm−2，Sm−1，Sm∗Sm+1∗Sm+2∗…∗Sn)</p>
+<p> nn.AdaptiveAvgPool1d &amp; nn.AdaptiveAvgPool2d</p>
+<p>eg1 </p>
+<p><code>m = nn.AdaptiveAvgPool1d(1)</code></p>
+<p><code>input = torch.randn(12, 64, 8)</code></p>
+<p><code>output = m(input)</code></p>
+<p><code>print(output.shape())</code></p>
+<p>输出(12，64，1）</p>
+<p>eg2</p>
+<p><code>m = nn.AdaptiveAvgPool2d((5,6))</code></p>
+<p><code>input = torch.randn(12, 64, 8)</code></p>
+<p><code>output = m(input)</code></p>
+<p><code>print(output.shape())</code></p>
+<p>输出(12，5，6）</p>
+<h4 id="Conv1d-amp-Conv2d"><a href="#Conv1d-amp-Conv2d" class="headerlink" title="Conv1d&amp;Conv2d"></a>Conv1d&amp;Conv2d</h4><p>输入数据格式如下：</p>
+<p><img src="https://img2018.cnblogs.com/blog/1498369/201905/1498369-20190504202338298-1508304575.png" alt="img"></p>
+<p>Conv1d类比，输入数据格式是（Batch_szie, Channel, Length of text）</p>
+<p>class torch.nn.Conv1d(in_channels, out_channels, kernel_size, stride&#x3D;1, padding&#x3D;0, dilation&#x3D;1, groups&#x3D;1, bias&#x3D;True)</p>
+<p>in_channels(int) – 输入信号的通道。在文本分类中，即为词向量的维度<br>out_channels(int) – 卷积产生的通道。有多少个out_channels，就需要多少个1维卷积<br>kernel_size(int or tuple) - 卷积核的尺寸，卷积核的大小为(k,)，第二个维度是由in_channels来决定的，所以实际上卷积大小为kernel_size*in_channels<br>stride(int or tuple, optional) - 卷积步长<br>padding (int or tuple, optional)- 输入的每一条边补充0的层数<br>dilation(int or tuple, &#96;optional&#96;&#96;) – 卷积核元素之间的间距<br>groups(int, optional) – 从输入通道到输出通道的阻塞连接数<br>bias(bool, optional) - 如果bias&#x3D;True，添加偏置<br>举个例子:</p>
+<p>conv1 &#x3D; nn.Conv1d(in_channels&#x3D;256，out_channels&#x3D;100,kernel_size&#x3D;2)<br>input &#x3D; torch.randn(32,35,256)</p>
+<p>batch_size x text_len x embedding_size -&gt; batch_size x embedding_size x text_len</p>
+<p>input &#x3D; input.permute(0,2,1)<br>out &#x3D; conv1(input)<br>print(out.size())<br>这里32为batch_size，35为句子最大长度，256为词向量</p>
+<p>再输入一维卷积的时候，需要将32<em>35</em>256变换为32<em>256</em>35，因为一维卷积是在最后维度上扫的，最后out的大小即为：32 <em>100</em>（35-2+1）&#x3D;32 <em>100</em> 34</p>
+<h4 id="Pytorch中transpose与numpy中transpose的异同"><a href="#Pytorch中transpose与numpy中transpose的异同" class="headerlink" title="Pytorch中transpose与numpy中transpose的异同"></a>Pytorch中transpose与numpy中transpose的异同</h4><p>相同点，都用于作不同维度间的转换，且都是深拷贝，不影响原来的</p>
+<h3 id="张量乘法"><a href="#张量乘法" class="headerlink" title="张量乘法"></a>张量乘法</h3><p>  1.torch.bmm </p>
+<p><strong>函数作用</strong><br>计算两个tensor的矩阵乘法，torch.bmm(a,b),tensor a 的size为(b,h,w),tensor b的size为(b,w,h),注意两个tensor的维度必须为3</p>
+<ol start="2">
+<li>torch.matmul</li>
+</ol>
+<p><img src="https://img-blog.csdnimg.cn/2020042710180343.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FzbXg2NjY=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><img src="https://img-blog.csdnimg.cn/20200427102557964.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FzbXg2NjY=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h4 id="PyTorch实现MLP的两种方法，以及nn-Conv1d-kernel-size-x3D-1和nn-Linear的区别"><a href="#PyTorch实现MLP的两种方法，以及nn-Conv1d-kernel-size-x3D-1和nn-Linear的区别" class="headerlink" title="PyTorch实现MLP的两种方法，以及nn.Conv1d, kernel_size&#x3D;1和nn.Linear的区别"></a>PyTorch实现MLP的两种方法，以及nn.Conv1d, kernel_size&#x3D;1和nn.Linear的区别</h4><p>两者可以实现同样结构的MLP计算，但计算形式不同，具体为：</p>
+<p>nn.Conv1d输入的是一个[batch, channel, length]，3维tensor，</p>
+<p>而nn.Linear输入的是一个[batch, *,in_features]，可变形状tensor，在进行等价计算时务必保证nn.Linear输入tensor为三维</p>
+<p>nn.Conv1d作用在第二个维度位置channel，nn.Linear作用在第三个维度位置in_features，对于一个X，若要在两者之间进行等价计算，需要进行tensor.permute，重新排列维度轴秩序</p>
+<p>详见博客：<a target="_blank" rel="noopener" href="https://blog.csdn.net/l1076604169/article/details/107170146">https://blog.csdn.net/l1076604169/article/details/107170146</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2022/08/21/%E6%96%B0%E7%9A%84%E5%BC%80%E5%A7%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -652,7 +812,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/11/12/%E4%BB%A3%E7%A0%81%E7%BB%86%E8%8A%82%E9%9A%8F%E6%9C%BA/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/11/12/Python%E9%9A%8F%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/yj.png">
@@ -666,7 +826,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/11/12/%E4%BB%A3%E7%A0%81%E7%BB%86%E8%8A%82%E9%9A%8F%E6%9C%BA/" class="post-title-link" itemprop="url">代码细节随记</a>
+            <a href="/2021/11/12/Python%E9%9A%8F%E8%AE%B0/" class="post-title-link" itemprop="url">Python随记</a>
         </h2>
 
         <div class="post-meta">
@@ -683,7 +843,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-08-25 00:51:26" itemprop="dateModified" datetime="2022-08-25T00:51:26+08:00">2022-08-25</time>
+                <time title="修改时间：2022-08-25 01:00:37" itemprop="dateModified" datetime="2022-08-25T01:00:37+08:00">2022-08-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -710,7 +870,7 @@
 <p><img src="https://img-blog.csdn.net/20170804092530371" alt="img"></p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/11/12/%E4%BB%A3%E7%A0%81%E7%BB%86%E8%8A%82%E9%9A%8F%E6%9C%BA/#more" rel="contents">
+              <a class="btn" href="/2021/11/12/Python%E9%9A%8F%E8%AE%B0/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -895,88 +1055,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2020/05/07/convex-optimization/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/yj.png">
-      <meta itemprop="name" content="MYF">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MYF  ZJU-ISEE">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/07/convex-optimization/" class="post-title-link" itemprop="url">Convex Optimization</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-07 14:41:32" itemprop="dateCreated datePublished" datetime="2020-05-07T14:41:32+08:00">2020-05-07</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-08-24 00:07:53" itemprop="dateModified" datetime="2022-08-24T00:07:53+08:00">2022-08-24</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/math/" itemprop="url" rel="index"><span itemprop="name">math</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>This is a course provided by professor LinQing in USTC, called Optimization theory, but concentreting on convex optimization, which is simpler than non-convex optimizayion problems.So we can also call it simple optimization.The video of lectures are shared in <a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Jt411p7jE?from=search&seid=15465159093593254480">bilibili</a>, including 54 lectures.  </p>
-<h2 id="Contents"><a href="#Contents" class="headerlink" title="Contents"></a>Contents</h2>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/05/07/convex-optimization/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1048,14 +1126,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
